@@ -179,7 +179,8 @@ def main():
 
         # Save trades for this threshold
         if len(tdf) > 0:
-            trades_file = os.path.join(OUTPUT_DIR, f'multi_asset_trades_mf{mf:.4f}.csv'.replace('.', '_'))
+            mf_str = f'{mf:.4f}'.replace('.', '_')
+            trades_file = os.path.join(OUTPUT_DIR, f'multi_asset_trades_mf{mf_str}.csv')
             tdf.to_csv(trades_file, index=False)
             print(f"  -> Trades saved to {trades_file}")
 
