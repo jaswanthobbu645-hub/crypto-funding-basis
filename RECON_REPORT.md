@@ -161,3 +161,157 @@ Columns: ['timestamp', 'open', 'high', 'low', 'close', 'volume', 'fundingRate']
 Date range:
 min: 2024-09-22 19:00:00
 max: 2026-09-22 18:00:00
+
+D1. Comparing trade files:
+
+D2. Parameters in strategy files:
+src/strategy/multi_asset.py:
+11:ENTRY_Z = 1.2
+12:EXIT_Z = 0.5
+14:MIN_FUNDING_LEVELS = [0.0001, 0.0003, 0.0005, 0.0008, 0.0010]
+21:FEE_MAKER = 0.0003   # 0.03% maker per side (problem statement)
+22:FEE_TAKER = 0.0005   # 0.05% taker per side
+51:        return FEE_MAKER * 2  # maker both sides
+53:        return FEE_TAKER * 2  # taker both sides
+80:            if (pos == -1 and z < EXIT_Z) or (pos == 1 and z > -EXIT_Z):
+98:            if z > ENTRY_Z and abs(fr) >= min_funding:
+104:            elif z < -ENTRY_Z and abs(fr) >= min_funding:
+116:    print("PHASE 2b: MIN_FUNDING SENSITIVITY")
+122:    for mf in MIN_FUNDING_LEVELS:
+129:            print(f"MIN_FUNDING={mf:.4f}: No trades")
+137:        print(f"MIN_FUNDING={mf:.4f}: {len(tdf):4d} trades, "
+
+src/strategy/funding_basis.py:
+9:ENTRY_Z = 1.2
+10:EXIT_Z = 0.5
+12:MAKER_FEE_PERP = 0.0002
+13:MIN_FUNDING = 0.0001   # 0.01% per 8h minimum
+55:            if (position == -1 and z < EXIT_Z) or (position == 1 and z > -EXIT_Z):
+63:                cost = MAKER_FEE_PERP * 2
+82:            if z > ENTRY_Z and abs(funding) >= MIN_FUNDING:
+88:            elif z < -ENTRY_Z and abs(funding) >= MIN_FUNDING:
+116:        print("\nNo trades. Lower ENTRY_Z to 1.0 and rerun.")
+
+D3. Parameters in 05b_taker_test.py (first 30 lines):
+import pandas as pd
+import numpy as np
+
+data = pd.read_pickle('data/combined_all.pkl')
+data = {k: v for k, v in data.items() if 'SUI' not in k}
+
+ZW = 30 * 24
+EZ = 1.2
+XZ = 0.5
+MH = 24
+FEE = 0.0005
+FH = [0, 8, 16]
+MIN_FUNDING = 0.0001   # 0.01% per 8h minimum
+
+def bt(df, asset):
+    df = df.copy()
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df = df.sort_values('timestamp').reset_index(drop=True)
+    df['fundingRate'] = df['fundingRate'].fillna(0)
+    m = df['fundingRate'].rolling(ZW, min_periods=ZW//2).mean()
+    s = df['fundingRate'].rolling(ZW, min_periods=ZW//2).std()
+    df['z'] = (df['fundingRate'] - m) / s.replace(0, np.nan)
+
+    t = []
+    pos = 0
+    hh = 0
+    fp = 0.0
+
+    for i in range(1, len(df)):
+        r = df.iloc[i]
+
+D4. Parameter sweep combinations:
+src/analysis/parameter_sweep.py loop lines:
+22:    for f in sorted(os.listdir(DATA_DIR)):
+58:    for i in range(1, len(df)):
+115:    for ez in entries:
+116:        for xz in exits:
+117:            for mh in holds:
+118:                for mf in min_funds:
+120:                    for name, df in assets.items():
+160:        for _, r in top.iterrows():
+171:        for _, r in pos.head(10).iterrows():
+
+Analyzing parameter_sweep.py:
+
+D5. Walk forward results:
+walk_forward/walk_forward_summary.txt:
+Walk-Forward Validation Results
+==================================================
+
+Window 1:
+  Train: 2022-09-01 to 2024-01-01
+  Test:  2024-01-01 to 2024-03-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 10.09%
+    Sharpe Ratio: -0.80
+    Max Drawdown: 0.00%
+    Win Rate: 27.16%
+    Total Trades: 81
+    Profit Factor: 0.90
+    Trades/Month: 3.38
+
+Window 2:
+  Train: 2022-09-01 to 2024-03-01
+  Test:  2024-03-01 to 2024-05-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 9.55%
+    Sharpe Ratio: -1.49
+    Max Drawdown: 0.00%
+    Win Rate: 28.97%
+    Total Trades: 107
+    Profit Factor: 0.83
+    Trades/Month: 4.46
+
+Window 3:
+  Train: 2022-09-01 to 2024-05-01
+  Test:  2024-05-01 to 2024-07-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 7.67%
+    Sharpe Ratio: -1.94
+    Max Drawdown: 0.00%
+    Win Rate: 18.82%
+    Total Trades: 85
+    Profit Factor: 0.80
+    Trades/Month: 3.54
+
+Window 4:
+  Train: 2022-09-01 to 2024-07-01
+  Test:  2024-07-01 to 2024-09-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 6.86%
+    Sharpe Ratio: -4.27
+    Max Drawdown: 0.00%
+    Win Rate: 18.97%
+    Total Trades: 58
+    Profit Factor: 0.43
+    Trades/Month: 2.42
+
+
+First 20 lines of walk_forward/walk_forward_results.csv:
+window,train_start,train_end,test_start,test_end,total_trades,win_rate,net_pnl,net_pnl_pct,sharpe_ratio,max_drawdown,trades_per_month
+1,2022-09-01,2024-01-01,2024-01-01,2024-03-01,81,0.2716,-539.81,10.0917,-0.8019,0.0,3.38
+2,2022-09-01,2024-03-01,2024-03-01,2024-05-01,107,0.2897,-1884.84,9.5519,-1.4934,0.0,4.46
+3,2022-09-01,2024-05-01,2024-05-01,2024-07-01,85,0.1882,-809.89,7.6671,-1.9388,0.0,3.54
+4,2022-09-01,2024-07-01,2024-07-01,2024-09-01,58,0.1897,-2152.16,6.8572,-4.2748,0.0,2.42
+
+D6. results_phase2/summary.txt:
+Total trades: 1548
+Trades/month: 64.5
+Win rate: 18.3%
+Total PnL: -43.77%
+PnL/year: -21.9%
+
+=== CASE DECISION ===
+funding_basis_trades.csv total net_pnl_pct: POSITIVE (+62.05%)
+results_phase2/multi_asset_trades.csv total net_pnl_pct: NEGATIVE (-43.77%)
+=> CASE A: funding_basis_trades.csv has POSITIVE total net_pnl_pct
+=> Setting it as the canonical trades file.
