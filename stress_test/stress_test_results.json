@@ -1,0 +1,112 @@
+[
+  {
+    "scenario": "Base case",
+    "net_pnl": -1256.0453616546747,
+    "net_pnl_pct": -1.2560453616547456,
+    "sharpe_ratio": -0.15669070866827645,
+    "max_drawdown": 0.07190113698411374,
+    "win_rate": 0.3385518590998043,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 4117.532064626823,
+    "passes": false
+  },
+  {
+    "scenario": "High slippage",
+    "net_pnl": -7129.36468897387,
+    "net_pnl_pct": -7.1293646889739755,
+    "sharpe_ratio": -1.003488679643833,
+    "max_drawdown": 0.1014403423443948,
+    "win_rate": 0.3258317025440313,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 10055.964521742557,
+    "passes": false
+  },
+  {
+    "scenario": "Worst-case fees",
+    "net_pnl": -1256.0453616546747,
+    "net_pnl_pct": -1.2560453616547456,
+    "sharpe_ratio": -0.15669070866827645,
+    "max_drawdown": 0.07190113698411374,
+    "win_rate": 0.3385518590998043,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 4117.532064626823,
+    "passes": false
+  },
+  {
+    "scenario": "Funding shock",
+    "net_pnl": -1256.0453616546747,
+    "net_pnl_pct": -1.2560453616547456,
+    "sharpe_ratio": -0.15669070866827645,
+    "max_drawdown": 0.07190113698411374,
+    "win_rate": 0.3385518590998043,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 4117.532064626823,
+    "passes": false
+  },
+  {
+    "scenario": "Combined stress",
+    "net_pnl": -7129.36468897387,
+    "net_pnl_pct": -7.1293646889739755,
+    "sharpe_ratio": -1.003488679643833,
+    "max_drawdown": 0.1014403423443948,
+    "win_rate": 0.3258317025440313,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 10055.964521742557,
+    "passes": false
+  },
+  {
+    "scenario": "Liquidity crisis (FTX-style)",
+    "net_pnl": -19736.84823543232,
+    "net_pnl_pct": -19.736848235432337,
+    "sharpe_ratio": -3.410571301334876,
+    "max_drawdown": 0.20418139194530321,
+    "win_rate": 0.32555123216601817,
+    "trades_per_month": 32.125,
+    "total_fees_paid": 23443.105281163265,
+    "passes": false
+  },
+  {
+    "scenario": "Signal degradation",
+    "net_pnl": -1256.0453616546747,
+    "net_pnl_pct": -1.2560453616547456,
+    "sharpe_ratio": -0.15669070866827645,
+    "max_drawdown": 0.07190113698411374,
+    "win_rate": 0.3385518590998043,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 4117.532064626823,
+    "passes": false
+  },
+  {
+    "scenario": "Execution delay",
+    "net_pnl": -1256.0453616546747,
+    "net_pnl_pct": -1.2560453616547456,
+    "sharpe_ratio": -0.15669070866827645,
+    "max_drawdown": 0.07190113698411374,
+    "win_rate": 0.3385518590998043,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 4117.532064626823,
+    "passes": false
+  },
+  {
+    "scenario": "Reduced leverage",
+    "net_pnl": -1256.0453616546747,
+    "net_pnl_pct": -1.2560453616547456,
+    "sharpe_ratio": -0.15669070866827645,
+    "max_drawdown": 0.07190113698411374,
+    "win_rate": 0.3385518590998043,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 4117.532064626823,
+    "passes": false
+  },
+  {
+    "scenario": "Confluence = 2",
+    "net_pnl": -1256.0453616546747,
+    "net_pnl_pct": -1.2560453616547456,
+    "sharpe_ratio": -0.15669070866827645,
+    "max_drawdown": 0.07190113698411374,
+    "win_rate": 0.3385518590998043,
+    "trades_per_month": 42.583333333333336,
+    "total_fees_paid": 4117.532064626823,
+    "passes": false
+  }
+]

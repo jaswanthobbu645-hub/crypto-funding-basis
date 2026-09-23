@@ -1,0 +1,62 @@
+=== Output of 05_funding_basis.py (with MIN_FUNDING filter) ===
+======================================================================
+FUNDING RATE BASIS HARVEST - BACKTEST
+======================================================================
+
+Processing SOL-USDT-PERP...
+  155 trades
+
+Processing DOGE-USDT-PERP...
+  94 trades
+
+Processing ARB-USDT-PERP...
+  389 trades
+
+Processing SUI-USDT-PERP...
+  389 trades
+
+======================================================================
+PERFORMANCE SUMMARY
+======================================================================
+Total trades:     1027
+Trades/month:     42.8
+Win rate:         66.5%
+Avg win:          +0.2075%
+Avg loss:         -0.0950%
+Total PnL:        +109.03%
+PnL/month:        +4.54%
+PnL/year (est):   +54.5%
+
+Per-asset breakdown:
+  SOL-USDT-PERP: 155 trades, 41.3% WR, +12.77% total
+  DOGE-USDT-PERP: 94 trades, 47.9% WR, +2.30% total
+  ARB-USDT-PERP: 389 trades, 73.8% WR, +46.98% total
+  SUI-USDT-PERP: 389 trades, 73.8% WR, +46.98% total
+
+=== Output of 05b_taker_test.py (with MIN_FUNDING filter) ===
+SOL-USDT-PERP: 155 trades, PnL +3.47%
+DOGE-USDT-PERP: 94 trades, PnL -3.34%
+ARB-USDT-PERP: 389 trades, PnL +23.64%
+
+TAKER FEE RESULTS (0.05% per side)
+Total trades: 638
+Trades/month: 26.6
+Win rate: 48.1%
+Total PnL: +23.77%
+PnL/year: +11.9%
+
+=== Comparison with previous run (without filter) ===
+
+05_funding_basis.py:
+- Trades: 1197 -> 1027 (-170 trades, -14.2%)
+- Win rate: 60.1% -> 66.5% (+6.4 percentage points)
+- Total PnL: +87.35% -> +109.03% (+21.68 percentage points)
+- PnL/year: +43.7% -> +54.5% (+10.8 percentage points)
+
+05b_taker_test.py:
+- Trades: 801 -> 638 (-163 trades, -20.3%)
+- Win rate: 38.2% -> 48.1% (+9.9 percentage points)
+- Total PnL: +6.60% -> +23.77% (+17.17 percentage points)
+- PnL/year: +3.3% -> +11.9% (+8.6 percentage points)
+
+Note: The filter removed trades with very low absolute funding rates, which improved win rate and PnL while reducing trade frequency.

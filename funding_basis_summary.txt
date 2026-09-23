@@ -1,0 +1,6 @@
+Total trades: 638
+Trades/month: 26.6
+Win rate: 62.1%
+Total PnL: +62.05%
+PnL/month: +2.59%
+PnL/year: +31.0%

@@ -1,0 +1,286 @@
+[
+  {
+    "window": 1,
+    "train_start": "2022-09-01",
+    "train_end": "2024-01-01",
+    "test_start": "2024-01-01",
+    "test_end": "2024-03-01",
+    "best_params": {
+      "OI_THRESHOLD": 1.0,
+      "FUNDING_LONG_THRESH": -0.0005,
+      "FUNDING_SHORT_THRESH": 0.003,
+      "BOOK_LONG_THRESH": 0.6,
+      "BOOK_SHORT_THRESH": 0.35,
+      "MIN_CONFLUENCE_SCORE": 2,
+      "ADX_TREND_THRESH": 30,
+      "REGIME_CONFIRM_BARS": 2,
+      "BULL_TP_PCT": 0.006,
+      "BULL_SL_PCT": 0.005,
+      "SIDEWAYS_TP_PCT": 0.008,
+      "SIDEWAYS_SL_PCT": 0.002,
+      "RISK_PCT_PER_TRADE": 0.005,
+      "OI_SURGE_THRESH": 1.0,
+      "BAR_POS_SURGE_LONG": 0.6,
+      "BAR_POS_SURGE_SHORT": 0.3,
+      "FUNDING_NEUTRAL": 0.002,
+      "score": -999,
+      "net_pnl_pct": 17.576026591614074,
+      "sharpe_ratio": -0.7622955691520219,
+      "max_drawdown": 0.09855263684918912,
+      "win_rate": 0.44018691588785047,
+      "trades_per_month": 10.979320877761744
+    },
+    "stats": {
+      "total_trades": 81,
+      "winning_trades": 22,
+      "losing_trades": 59,
+      "win_rate": 0.2716049382716049,
+      "net_pnl": -539.8131333281738,
+      "net_pnl_pct": 10.091709436309552,
+      "gross_pnl": -648.3134118060832,
+      "total_cost": -108.50027847790926,
+      "avg_win": 230.20286660025084,
+      "avg_loss": -94.98773217853716,
+      "profit_factor": 0.9036783494950854,
+      "sharpe_ratio": -0.8018741395996946,
+      "sortino_ratio": -0.29279535087686,
+      "calmar_ratio": 0,
+      "max_drawdown": 0.0,
+      "var_95": 0.0,
+      "trades_per_month": 3.375,
+      "regime_stats": {
+        "BULL": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        },
+        "SIDEWAYS": {
+          "trades": 81,
+          "win_rate": 0.2716049382716049,
+          "avg_pnl": -6.664359670718195,
+          "total_pnl": -539.8131333281738
+        },
+        "BEAR": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        }
+      }
+    }
+  },
+  {
+    "window": 2,
+    "train_start": "2022-09-01",
+    "train_end": "2024-03-01",
+    "test_start": "2024-03-01",
+    "test_end": "2024-05-01",
+    "best_params": {
+      "OI_THRESHOLD": 1.0,
+      "FUNDING_LONG_THRESH": -0.0005,
+      "FUNDING_SHORT_THRESH": 0.003,
+      "BOOK_LONG_THRESH": 0.6,
+      "BOOK_SHORT_THRESH": 0.35,
+      "MIN_CONFLUENCE_SCORE": 2,
+      "ADX_TREND_THRESH": 30,
+      "REGIME_CONFIRM_BARS": 2,
+      "BULL_TP_PCT": 0.006,
+      "BULL_SL_PCT": 0.005,
+      "SIDEWAYS_TP_PCT": 0.008,
+      "SIDEWAYS_SL_PCT": 0.002,
+      "RISK_PCT_PER_TRADE": 0.005,
+      "OI_SURGE_THRESH": 1.0,
+      "BAR_POS_SURGE_LONG": 0.6,
+      "BAR_POS_SURGE_SHORT": 0.3,
+      "FUNDING_NEUTRAL": 0.002,
+      "score": -999,
+      "net_pnl_pct": 17.576026591614074,
+      "sharpe_ratio": -0.7622955691520219,
+      "max_drawdown": 0.09855263684918912,
+      "win_rate": 0.44018691588785047,
+      "trades_per_month": 10.979320877761744
+    },
+    "stats": {
+      "total_trades": 107,
+      "winning_trades": 31,
+      "losing_trades": 76,
+      "win_rate": 0.2897196261682243,
+      "net_pnl": -1884.840011273852,
+      "net_pnl_pct": 9.55189630298139,
+      "gross_pnl": -1030.3679822521685,
+      "total_cost": 854.4720290216834,
+      "avg_win": 297.52694654395185,
+      "avg_loss": -146.16020202810998,
+      "profit_factor": 0.8303195663388594,
+      "sharpe_ratio": -1.4934495306725157,
+      "sortino_ratio": -0.5338392875576718,
+      "calmar_ratio": 0,
+      "max_drawdown": 0.0,
+      "var_95": -0.00013212751011006931,
+      "trades_per_month": 4.458333333333333,
+      "regime_stats": {
+        "BULL": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        },
+        "SIDEWAYS": {
+          "trades": 107,
+          "win_rate": 0.2897196261682243,
+          "avg_pnl": -17.615327208166843,
+          "total_pnl": -1884.840011273852
+        },
+        "BEAR": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        }
+      }
+    }
+  },
+  {
+    "window": 3,
+    "train_start": "2022-09-01",
+    "train_end": "2024-05-01",
+    "test_start": "2024-05-01",
+    "test_end": "2024-07-01",
+    "best_params": {
+      "OI_THRESHOLD": 1.0,
+      "FUNDING_LONG_THRESH": -0.0005,
+      "FUNDING_SHORT_THRESH": 0.003,
+      "BOOK_LONG_THRESH": 0.6,
+      "BOOK_SHORT_THRESH": 0.35,
+      "MIN_CONFLUENCE_SCORE": 2,
+      "ADX_TREND_THRESH": 30,
+      "REGIME_CONFIRM_BARS": 2,
+      "BULL_TP_PCT": 0.006,
+      "BULL_SL_PCT": 0.005,
+      "SIDEWAYS_TP_PCT": 0.008,
+      "SIDEWAYS_SL_PCT": 0.002,
+      "RISK_PCT_PER_TRADE": 0.005,
+      "OI_SURGE_THRESH": 1.0,
+      "BAR_POS_SURGE_LONG": 0.6,
+      "BAR_POS_SURGE_SHORT": 0.3,
+      "FUNDING_NEUTRAL": 0.002,
+      "score": -999,
+      "net_pnl_pct": 17.576026591614074,
+      "sharpe_ratio": -0.7622955691520219,
+      "max_drawdown": 0.09855263684918912,
+      "win_rate": 0.44018691588785047,
+      "trades_per_month": 10.979320877761744
+    },
+    "stats": {
+      "total_trades": 85,
+      "winning_trades": 16,
+      "losing_trades": 69,
+      "win_rate": 0.18823529411764706,
+      "net_pnl": -809.8918409964263,
+      "net_pnl_pct": 7.6670562917075875,
+      "gross_pnl": -662.8335107985511,
+      "total_cost": 147.058330197875,
+      "avg_win": 199.91002763015936,
+      "avg_loss": -58.09351134897066,
+      "profit_factor": 0.7979539772956132,
+      "sharpe_ratio": -1.9388186252865796,
+      "sortino_ratio": -1.3498624100620782,
+      "calmar_ratio": 0,
+      "max_drawdown": 0.0,
+      "var_95": 0.0,
+      "trades_per_month": 3.5416666666666665,
+      "regime_stats": {
+        "BULL": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        },
+        "SIDEWAYS": {
+          "trades": 85,
+          "win_rate": 0.18823529411764706,
+          "avg_pnl": -9.528139305840309,
+          "total_pnl": -809.8918409964263
+        },
+        "BEAR": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        }
+      }
+    }
+  },
+  {
+    "window": 4,
+    "train_start": "2022-09-01",
+    "train_end": "2024-07-01",
+    "test_start": "2024-07-01",
+    "test_end": "2024-09-01",
+    "best_params": {
+      "OI_THRESHOLD": 1.0,
+      "FUNDING_LONG_THRESH": -0.0005,
+      "FUNDING_SHORT_THRESH": 0.003,
+      "BOOK_LONG_THRESH": 0.6,
+      "BOOK_SHORT_THRESH": 0.35,
+      "MIN_CONFLUENCE_SCORE": 2,
+      "ADX_TREND_THRESH": 30,
+      "REGIME_CONFIRM_BARS": 2,
+      "BULL_TP_PCT": 0.006,
+      "BULL_SL_PCT": 0.005,
+      "SIDEWAYS_TP_PCT": 0.008,
+      "SIDEWAYS_SL_PCT": 0.002,
+      "RISK_PCT_PER_TRADE": 0.005,
+      "OI_SURGE_THRESH": 1.0,
+      "BAR_POS_SURGE_LONG": 0.6,
+      "BAR_POS_SURGE_SHORT": 0.3,
+      "FUNDING_NEUTRAL": 0.002,
+      "score": -999,
+      "net_pnl_pct": 17.576026591614074,
+      "sharpe_ratio": -0.7622955691520219,
+      "max_drawdown": 0.09855263684918912,
+      "win_rate": 0.44018691588785047,
+      "trades_per_month": 10.979320877761744
+    },
+    "stats": {
+      "total_trades": 58,
+      "winning_trades": 11,
+      "losing_trades": 47,
+      "win_rate": 0.1896551724137931,
+      "net_pnl": -2152.157372113804,
+      "net_pnl_pct": 6.857164450711221,
+      "gross_pnl": -1633.528045343694,
+      "total_cost": 518.6293267701091,
+      "avg_win": 150.41872944410923,
+      "avg_loss": -80.99496587231926,
+      "profit_factor": 0.43464903167457963,
+      "sharpe_ratio": -4.2747550783611095,
+      "sortino_ratio": -0.9859836966259042,
+      "calmar_ratio": 0,
+      "max_drawdown": 0.0,
+      "var_95": 0.0,
+      "trades_per_month": 2.4166666666666665,
+      "regime_stats": {
+        "BULL": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        },
+        "SIDEWAYS": {
+          "trades": 58,
+          "win_rate": 0.1896551724137931,
+          "avg_pnl": -37.10616158816903,
+          "total_pnl": -2152.157372113804
+        },
+        "BEAR": {
+          "trades": 0,
+          "win_rate": 0,
+          "avg_pnl": 0,
+          "total_pnl": 0
+        }
+      }
+    }
+  }
+]

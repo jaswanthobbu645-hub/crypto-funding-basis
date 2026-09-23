@@ -1,0 +1,93 @@
+Stress Test Results
+============================================================
+
+Scenario: Base case
+  Net PnL %: -1.26%
+  Sharpe Ratio: -0.16
+  Max Drawdown: 7.19%
+  Win Rate: 33.86%
+  Trades/Month: 42.58
+  Total Fees Paid: $4117.53
+  Pass/Fail: FAIL
+
+Scenario: High slippage
+  Net PnL %: -7.13%
+  Sharpe Ratio: -1.00
+  Max Drawdown: 10.14%
+  Win Rate: 32.58%
+  Trades/Month: 42.58
+  Total Fees Paid: $10055.96
+  Pass/Fail: FAIL
+
+Scenario: Worst-case fees
+  Net PnL %: -1.26%
+  Sharpe Ratio: -0.16
+  Max Drawdown: 7.19%
+  Win Rate: 33.86%
+  Trades/Month: 42.58
+  Total Fees Paid: $4117.53
+  Pass/Fail: FAIL
+
+Scenario: Funding shock
+  Net PnL %: -1.26%
+  Sharpe Ratio: -0.16
+  Max Drawdown: 7.19%
+  Win Rate: 33.86%
+  Trades/Month: 42.58
+  Total Fees Paid: $4117.53
+  Pass/Fail: FAIL
+
+Scenario: Combined stress
+  Net PnL %: -7.13%
+  Sharpe Ratio: -1.00
+  Max Drawdown: 10.14%
+  Win Rate: 32.58%
+  Trades/Month: 42.58
+  Total Fees Paid: $10055.96
+  Pass/Fail: FAIL
+
+Scenario: Liquidity crisis (FTX-style)
+  Net PnL %: -19.74%
+  Sharpe Ratio: -3.41
+  Max Drawdown: 20.42%
+  Win Rate: 32.56%
+  Trades/Month: 32.12
+  Total Fees Paid: $23443.11
+  Pass/Fail: FAIL
+
+Scenario: Signal degradation
+  Net PnL %: -1.26%
+  Sharpe Ratio: -0.16
+  Max Drawdown: 7.19%
+  Win Rate: 33.86%
+  Trades/Month: 42.58
+  Total Fees Paid: $4117.53
+  Pass/Fail: FAIL
+
+Scenario: Execution delay
+  Net PnL %: -1.26%
+  Sharpe Ratio: -0.16
+  Max Drawdown: 7.19%
+  Win Rate: 33.86%
+  Trades/Month: 42.58
+  Total Fees Paid: $4117.53
+  Pass/Fail: FAIL
+
+Scenario: Reduced leverage
+  Net PnL %: -1.26%
+  Sharpe Ratio: -0.16
+  Max Drawdown: 7.19%
+  Win Rate: 33.86%
+  Trades/Month: 42.58
+  Total Fees Paid: $4117.53
+  Pass/Fail: FAIL
+
+Scenario: Confluence = 2
+  Net PnL %: -1.26%
+  Sharpe Ratio: -0.16
+  Max Drawdown: 7.19%
+  Win Rate: 33.86%
+  Trades/Month: 42.58
+  Total Fees Paid: $4117.53
+  Pass/Fail: FAIL
+

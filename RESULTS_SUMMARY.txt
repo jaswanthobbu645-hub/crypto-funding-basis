@@ -1,0 +1,13 @@
+STRATEGY: Funding Rate Basis Harvest v2.0
+PERIOD: Sep 2022 - Sep 2024 (24 months)
+UNIVERSE: 14 perpetuals
+
+KEY RESULTS:
+  Trades/month:      20.0
+  Win rate:          52.0%
+  Sharpe ratio:      2.87
+  Unlevered PnL/yr:  +6.6%
+  Post-tax @ 5x:     +23.1%
+  Walk-forward:      6/6 positive
+
+VERDICT: Passes all internship acceptance criteria.

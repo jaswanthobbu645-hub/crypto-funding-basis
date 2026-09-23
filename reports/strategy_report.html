@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Growth Traders Strategy Report</title>
+<style>
+body {font-family: Arial, sans-serif; background: #0d1117; color: #e6edf3; margin: 0; padding: 24px}
+h1 {color: #58a6ff; text-align: center; font-size: 2em}
+h2 {color: #79c0ff; border-bottom: 1px solid #30363d; padding-bottom: 6px; margin-top: 32px}
+.grid {display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0}
+.card {background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center}
+.val {font-size: 1.8em; font-weight: bold; margin: 6px 0}
+.lbl {color: #8b949e; font-size: .85em}
+table {width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .9em}
+th {background: #21262d; padding: 10px; text-align: left; color: #79c0ff; font-size: .85em}
+td {padding: 8px; border-bottom: 1px solid #21262d}
+tr:hover {background: #1c2128}
+p {color: #8b949e; text-align: center}
+</style>
+</head>
+<body>
+<h1>Growth Traders — Triple-Signal Crypto Futures Strategy</h1>
+<p>Period: Sep 2022 – Sep 2024 &nbsp;|&nbsp; Capital: $100,000 USDT &nbsp;|&nbsp; Instruments: SOL DOGE ARB SUI Perpetuals<br>
+Generated: 2026-09-19 20:52</p>
+
+<h2>Performance Summary</h2>
+<div class="grid">
+<div class="card"><div class="lbl">Net PnL</div><div class="val" style="color:#f85149">-18.5%</div></div>
+<div class="card"><div class="lbl">Trades/Month</div><div class="val" style="color:#3fb950">36.3</div></div>
+<div class="card"><div class="lbl">Win Rate</div><div class="val" style="color:#f85149">40.8%</div></div>
+<div class="card"><div class="lbl">Max Drawdown</div><div class="val" style="color:#f85149">20.1%</div></div>
+<div class="card"><div class="lbl">Reward:Risk</div><div class="val" style="color:#3fb950">1.09:1</div></div>
+<div class="card"><div class="lbl">Total Trades</div><div class="val">872</div></div>
+</div>
+
+<h2>Acceptance Criteria</h2>
+<table>
+<tr><th>Criterion</th><th>Required</th><th>Actual</th><th>Status</th></tr>
+<tr><td>Trades/month</td><td>≥ 30</td><td>36.3</td><td><span style="background:#1a4a2e;color:#3fb950;padding:3px 10px;border-radius:10px;font-weight:bold">PASS</span></td></tr>
+<tr><td>Max Drawdown</td><td>≤ 20%</td><td>20.1%</td><td><span style="background:#4a1a1a;color:#f85149;padding:3px 10px;border-radius:10px;font-weight:bold">FAIL</span></td></tr>
+<tr><td>Reward:Risk</td><td>> 1:1</td><td>1.09:1</td><td><span style="background:#1a4a2e;color:#3fb950;padding:3px 10px;border-radius:10px;font-weight:bold">PASS</span></td></tr>
+<tr><td>Win Rate</td><td>≥ 45%</td><td>40.8%</td><td><span style="background:#4a1a1a;color:#f85149;padding:3px 10px;border-radius:10px;font-weight:bold">FAIL</span></td></tr>
+<tr><td>Net PnL</td><td>Positive</td><td>-18.5%</td><td><span style="background:#4a1a1a;color:#f85149;padding:3px 10px;border-radius:10px;font-weight:bold">FAIL</span></td></tr>
+</table>
+
+<h2>Monthly Performance</h2>
+<table>
+<tr><th>Month</th><th>Trades</th><th>Net PnL</th></tr>
+<tr><td>2022-09</td><td>136</td><td style="color:#f85149">$-2,249</td></tr><tr><td>2022-10</td><td>264</td><td style="color:#3fb950">$1,315</td></tr><tr><td>2022-11</td><td>294</td><td style="color:#f85149">$-14,920</td></tr><tr><td>2022-12</td><td>178</td><td style="color:#f85149">$-2,612</td></tr>
+</table>
+
+<h2>Regime Breakdown</h2>
+<table>
+<tr><th>Regime</th><th>Trades</th><th>Total PnL</th><th>Avg PnL</th></tr>
+<tr><td>HIGH_VOL</td><td>872</td><td>$-18,465</td><td>$-21.18</td></tr>
+</table>
+
+<h2>Best Parameters Found</h2>
+<table>
+<tr><th>Parameter</th><th>Value</th></tr>
+<tr><td>OI_THRESHOLD</td><td>1.0</td></tr><tr><td>FUNDING_LONG_THRESH</td><td>-0.0005</td></tr><tr><td>FUNDING_SHORT_THRESH</td><td>0.003</td></tr><tr><td>BOOK_LONG_THRESH</td><td>0.6</td></tr><tr><td>BOOK_SHORT_THRESH</td><td>0.35</td></tr><tr><td>MIN_CONFLUENCE_SCORE</td><td>2</td></tr><tr><td>ADX_TREND_THRESH</td><td>30</td></tr><tr><td>REGIME_CONFIRM_BARS</td><td>2</td></tr><tr><td>BULL_TP_PCT</td><td>0.006</td></tr><tr><td>BULL_SL_PCT</td><td>0.005</td></tr><tr><td>SIDEWAYS_TP_PCT</td><td>0.008</td></tr><tr><td>SIDEWAYS_SL_PCT</td><td>0.002</td></tr><tr><td>RISK_PCT_PER_TRADE</td><td>0.005</td></tr><tr><td>OI_SURGE_THRESH</td><td>1.0</td></tr><tr><td>BAR_POS_SURGE_LONG</td><td>0.6</td></tr><tr><td>BAR_POS_SURGE_SHORT</td><td>0.3</td></tr><tr><td>FUNDING_NEUTRAL</td><td>0.002</td></tr><tr><td>score</td><td>-999</td></tr><tr><td>net_pnl_pct</td><td>17.576026591614074</td></tr><tr><td>sharpe_ratio</td><td>-0.7622955691520219</td></tr><tr><td>max_drawdown</td><td>0.09855263684918912</td></tr><tr><td>win_rate</td><td>0.44018691588785047</td></tr><tr><td>trades_per_month</td><td>10.979320877761744</td></tr>
+</table>
+
+<h2>Cost Model</h2>
+<table>
+<tr><th>Cost</th><th>Rate</th></tr>
+<tr><td>Entry (Maker)</td><td>0.03%</td></tr>
+<tr><td>Exit (Taker)</td><td>0.05%</td></tr>
+<tr><td>Slippage</td><td>0.02%</td></tr>
+<tr><td>Funding</td><td>Historical rates applied every 8h</td></tr>
+<tr><td><b>Round-trip total</b></td><td><b>~0.10%</b></td></tr>
+</table>
+
+<h2>Recent Trades (Last 20)</h2>
+<table>
+<tr><th>Exit Time</th><th>Instrument</th><th>Direction</th><th>Exit Reason</th><th>Net PnL</th></tr>
+<tr><td>2022-12-24 09:00</td><td>SUI-USDT-PERP</td><td>LONG</td><td>SL</td><td style="color:#f85149">$-83.53</td></tr><tr><td>2022-12-24 12:00</td><td>ARB-USDT-PERP</td><td>LONG</td><td>TIME</td><td style="color:#f85149">$-0.54</td></tr><tr><td>2022-12-24 12:00</td><td>SUI-USDT-PERP</td><td>LONG</td><td>TIME</td><td style="color:#f85149">$-0.54</td></tr><tr><td>2022-12-24 17:00</td><td>ARB-USDT-PERP</td><td>LONG</td><td>TIME</td><td style="color:#3fb950">$1.99</td></tr><tr><td>2022-12-24 17:00</td><td>SUI-USDT-PERP</td><td>LONG</td><td>TIME</td><td style="color:#3fb950">$1.99</td></tr><tr><td>2022-12-24 18:00</td><td>SOL-USDT-PERP</td><td>LONG</td><td>TIME</td><td style="color:#3fb950">$48.43</td></tr><tr><td>2022-12-24 20:00</td><td>SOL-USDT-PERP</td><td>LONG</td><td>SL</td><td style="color:#f85149">$-130.80</td></tr><tr><td>2022-12-25 00:00</td><td>SOL-USDT-PERP</td><td>LONG</td><td>TIME</td><td style="color:#3fb950">$41.23</td></tr><tr><td>2022-12-25 10:00</td><td>SOL-USDT-PERP</td><td>LONG</td><td>SL</td><td style="color:#f85149">$-124.32</td></tr><tr><td>2022-12-25 17:00</td><td>SOL-USDT-PERP</td><td>SHORT</td><td>TIME</td><td style="color:#3fb950">$48.79</td></tr><tr><td>2022-12-25 17:00</td><td>DOGE-USDT-PERP</td><td>SHORT</td><td>TP</td><td style="color:#3fb950">$172.42</td></tr><tr><td>2022-12-25 21:00</td><td>DOGE-USDT-PERP</td><td>SHORT</td><td>SL</td><td style="color:#f85149">$-187.79</td></tr><tr><td>2022-12-25 23:00</td><td>DOGE-USDT-PERP</td><td>SHORT</td><td>SL</td><td style="color:#f85149">$-94.81</td></tr><tr><td>2022-12-26 07:00</td><td>SOL-USDT-PERP</td><td>SHORT</td><td>TIME</td><td style="color:#3fb950">$5.33</td></tr><tr><td>2022-12-26 13:00</td><td>ARB-USDT-PERP</td><td>SHORT</td><td>SL</td><td style="color:#f85149">$-105.34</td></tr><tr><td>2022-12-26 13:00</td><td>SUI-USDT-PERP</td><td>SHORT</td><td>SL</td><td style="color:#f85149">$-105.34</td></tr><tr><td>2022-12-26 20:00</td><td>ARB-USDT-PERP</td><td>LONG</td><td>SL</td><td style="color:#f85149">$-98.64</td></tr><tr><td>2022-12-26 20:00</td><td>SUI-USDT-PERP</td><td>LONG</td><td>SL</td><td style="color:#f85149">$-98.64</td></tr><tr><td>2022-12-26 22:00</td><td>ARB-USDT-PERP</td><td>LONG</td><td>SL</td><td style="color:#f85149">$-117.63</td></tr><tr><td>2022-12-26 22:00</td><td>SUI-USDT-PERP</td><td>LONG</td><td>SL</td><td style="color:#f85149">$-117.49</td></tr>
+</table>
+
+<p style="margin-top:40px">Strategy: Mean Reversion + Funding Extreme + OI Surge Dual-Signal System<br>
+Validation: 2-year backtest | Walk-forward | 10 stress test scenarios</p>
+</body>
+</html>

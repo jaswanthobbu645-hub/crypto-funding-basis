@@ -1,0 +1,256 @@
+Parameter Optimization Results
+==================================================
+Total parameter sets tested: 500
+Top score: -999.0000
+
+Top 10 Parameter Sets:
+
+1. Score: -999.0000
+   Net PnL %: -90.62%
+   Sharpe Ratio: -14.82
+   Max Drawdown: 95.20%
+   Win Rate: 13.06%
+   Trades/Month: 61.93
+   Parameters:
+     OI_THRESHOLD: 1.0
+     FUNDING_LONG_THRESH: -0.0005
+     FUNDING_SHORT_THRESH: 0.003
+     BOOK_LONG_THRESH: 0.6
+     BOOK_SHORT_THRESH: 0.35
+     MIN_CONFLUENCE_SCORE: 2
+     ADX_TREND_THRESH: 30
+     REGIME_CONFIRM_BARS: 2
+     BULL_TP_PCT: 0.006
+     BULL_SL_PCT: 0.005
+     SIDEWAYS_TP_PCT: 0.008
+     SIDEWAYS_SL_PCT: 0.002
+     RISK_PCT_PER_TRADE: 0.005
+     OI_SURGE_THRESH: 1.0
+     BAR_POS_SURGE_LONG: 0.6
+     BAR_POS_SURGE_SHORT: 0.3
+     FUNDING_NEUTRAL: 0.002
+
+2. Score: -999.0000
+   Net PnL %: -79.77%
+   Sharpe Ratio: -11.67
+   Max Drawdown: 86.02%
+   Win Rate: 18.37%
+   Trades/Month: 39.85
+   Parameters:
+     OI_THRESHOLD: 3.0
+     FUNDING_LONG_THRESH: -0.0005
+     FUNDING_SHORT_THRESH: 0.002
+     BOOK_LONG_THRESH: 0.7
+     BOOK_SHORT_THRESH: 0.35
+     MIN_CONFLUENCE_SCORE: 3
+     ADX_TREND_THRESH: 30
+     REGIME_CONFIRM_BARS: 3
+     BULL_TP_PCT: 0.006
+     BULL_SL_PCT: 0.003
+     SIDEWAYS_TP_PCT: 0.008
+     SIDEWAYS_SL_PCT: 0.003
+     RISK_PCT_PER_TRADE: 0.01
+     OI_SURGE_THRESH: 1.5
+     BAR_POS_SURGE_LONG: 0.6
+     BAR_POS_SURGE_SHORT: 0.35
+     FUNDING_NEUTRAL: 0.0005
+
+3. Score: -999.0000
+   Net PnL %: -38.65%
+   Sharpe Ratio: -12.35
+   Max Drawdown: 50.04%
+   Win Rate: 18.96%
+   Trades/Month: 24.74
+   Parameters:
+     OI_THRESHOLD: 1.0
+     FUNDING_LONG_THRESH: -0.003
+     FUNDING_SHORT_THRESH: 0.001
+     BOOK_LONG_THRESH: 0.65
+     BOOK_SHORT_THRESH: 0.4
+     MIN_CONFLUENCE_SCORE: 3
+     ADX_TREND_THRESH: 20
+     REGIME_CONFIRM_BARS: 4
+     BULL_TP_PCT: 0.012
+     BULL_SL_PCT: 0.005
+     SIDEWAYS_TP_PCT: 0.004
+     SIDEWAYS_SL_PCT: 0.004
+     RISK_PCT_PER_TRADE: 0.005
+     OI_SURGE_THRESH: 2.0
+     BAR_POS_SURGE_LONG: 0.7
+     BAR_POS_SURGE_SHORT: 0.4
+     FUNDING_NEUTRAL: 0.001
+
+4. Score: -999.0000
+   Net PnL %: -73.85%
+   Sharpe Ratio: -9.02
+   Max Drawdown: 87.34%
+   Win Rate: 27.85%
+   Trades/Month: 31.74
+   Parameters:
+     OI_THRESHOLD: 3.0
+     FUNDING_LONG_THRESH: -0.001
+     FUNDING_SHORT_THRESH: 0.001
+     BOOK_LONG_THRESH: 0.55
+     BOOK_SHORT_THRESH: 0.35
+     MIN_CONFLUENCE_SCORE: 3
+     ADX_TREND_THRESH: 20
+     REGIME_CONFIRM_BARS: 2
+     BULL_TP_PCT: 0.006
+     BULL_SL_PCT: 0.004
+     SIDEWAYS_TP_PCT: 0.006
+     SIDEWAYS_SL_PCT: 0.004
+     RISK_PCT_PER_TRADE: 0.015
+     OI_SURGE_THRESH: 2.0
+     BAR_POS_SURGE_LONG: 0.6
+     BAR_POS_SURGE_SHORT: 0.35
+     FUNDING_NEUTRAL: 0.001
+
+5. Score: -999.0000
+   Net PnL %: -66.41%
+   Sharpe Ratio: -16.13
+   Max Drawdown: 75.77%
+   Win Rate: 15.71%
+   Trades/Month: 39.86
+   Parameters:
+     OI_THRESHOLD: 1.5
+     FUNDING_LONG_THRESH: -0.002
+     FUNDING_SHORT_THRESH: 0.001
+     BOOK_LONG_THRESH: 0.6
+     BOOK_SHORT_THRESH: 0.35
+     MIN_CONFLUENCE_SCORE: 2
+     ADX_TREND_THRESH: 25
+     REGIME_CONFIRM_BARS: 3
+     BULL_TP_PCT: 0.01
+     BULL_SL_PCT: 0.005
+     SIDEWAYS_TP_PCT: 0.005
+     SIDEWAYS_SL_PCT: 0.003
+     RISK_PCT_PER_TRADE: 0.005
+     OI_SURGE_THRESH: 1.5
+     BAR_POS_SURGE_LONG: 0.6
+     BAR_POS_SURGE_SHORT: 0.35
+     FUNDING_NEUTRAL: 0.001
+
+6. Score: -999.0000
+   Net PnL %: -52.76%
+   Sharpe Ratio: -13.53
+   Max Drawdown: 69.37%
+   Win Rate: 19.85%
+   Trades/Month: 32.06
+   Parameters:
+     OI_THRESHOLD: 2.0
+     FUNDING_LONG_THRESH: -0.0005
+     FUNDING_SHORT_THRESH: 0.002
+     BOOK_LONG_THRESH: 0.65
+     BOOK_SHORT_THRESH: 0.35
+     MIN_CONFLUENCE_SCORE: 3
+     ADX_TREND_THRESH: 25
+     REGIME_CONFIRM_BARS: 4
+     BULL_TP_PCT: 0.012
+     BULL_SL_PCT: 0.003
+     SIDEWAYS_TP_PCT: 0.006
+     SIDEWAYS_SL_PCT: 0.0025
+     RISK_PCT_PER_TRADE: 0.005
+     OI_SURGE_THRESH: 2.0
+     BAR_POS_SURGE_LONG: 0.7
+     BAR_POS_SURGE_SHORT: 0.4
+     FUNDING_NEUTRAL: 0.001
+
+7. Score: -999.0000
+   Net PnL %: -96.26%
+   Sharpe Ratio: -8.93
+   Max Drawdown: 98.16%
+   Win Rate: 9.53%
+   Trades/Month: 52.76
+   Parameters:
+     OI_THRESHOLD: 3.0
+     FUNDING_LONG_THRESH: -0.003
+     FUNDING_SHORT_THRESH: 0.003
+     BOOK_LONG_THRESH: 0.6
+     BOOK_SHORT_THRESH: 0.35
+     MIN_CONFLUENCE_SCORE: 3
+     ADX_TREND_THRESH: 20
+     REGIME_CONFIRM_BARS: 2
+     BULL_TP_PCT: 0.006
+     BULL_SL_PCT: 0.003
+     SIDEWAYS_TP_PCT: 0.005
+     SIDEWAYS_SL_PCT: 0.004
+     RISK_PCT_PER_TRADE: 0.015
+     OI_SURGE_THRESH: 1.0
+     BAR_POS_SURGE_LONG: 0.65
+     BAR_POS_SURGE_SHORT: 0.35
+     FUNDING_NEUTRAL: 0.002
+
+8. Score: -999.0000
+   Net PnL %: -81.64%
+   Sharpe Ratio: -6.66
+   Max Drawdown: 94.71%
+   Win Rate: 19.33%
+   Trades/Month: 23.16
+   Parameters:
+     OI_THRESHOLD: 2.5
+     FUNDING_LONG_THRESH: -0.002
+     FUNDING_SHORT_THRESH: 0.001
+     BOOK_LONG_THRESH: 0.55
+     BOOK_SHORT_THRESH: 0.4
+     MIN_CONFLUENCE_SCORE: 3
+     ADX_TREND_THRESH: 20
+     REGIME_CONFIRM_BARS: 3
+     BULL_TP_PCT: 0.012
+     BULL_SL_PCT: 0.003
+     SIDEWAYS_TP_PCT: 0.008
+     SIDEWAYS_SL_PCT: 0.002
+     RISK_PCT_PER_TRADE: 0.015
+     OI_SURGE_THRESH: 2.0
+     BAR_POS_SURGE_LONG: 0.7
+     BAR_POS_SURGE_SHORT: 0.3
+     FUNDING_NEUTRAL: 0.002
+
+9. Score: -999.0000
+   Net PnL %: -57.84%
+   Sharpe Ratio: -12.27
+   Max Drawdown: 60.77%
+   Win Rate: 12.04%
+   Trades/Month: 41.42
+   Parameters:
+     OI_THRESHOLD: 1.0
+     FUNDING_LONG_THRESH: -0.002
+     FUNDING_SHORT_THRESH: 0.002
+     BOOK_LONG_THRESH: 0.6
+     BOOK_SHORT_THRESH: 0.4
+     MIN_CONFLUENCE_SCORE: 2
+     ADX_TREND_THRESH: 30
+     REGIME_CONFIRM_BARS: 4
+     BULL_TP_PCT: 0.006
+     BULL_SL_PCT: 0.005
+     SIDEWAYS_TP_PCT: 0.006
+     SIDEWAYS_SL_PCT: 0.004
+     RISK_PCT_PER_TRADE: 0.005
+     OI_SURGE_THRESH: 1.0
+     BAR_POS_SURGE_LONG: 0.65
+     BAR_POS_SURGE_SHORT: 0.35
+     FUNDING_NEUTRAL: 0.0005
+
+10. Score: -999.0000
+   Net PnL %: -43.35%
+   Sharpe Ratio: -7.22
+   Max Drawdown: 71.18%
+   Win Rate: 39.83%
+   Trades/Month: 19.68
+   Parameters:
+     OI_THRESHOLD: 1.0
+     FUNDING_LONG_THRESH: -0.001
+     FUNDING_SHORT_THRESH: 0.001
+     BOOK_LONG_THRESH: 0.55
+     BOOK_SHORT_THRESH: 0.45
+     MIN_CONFLUENCE_SCORE: 2
+     ADX_TREND_THRESH: 30
+     REGIME_CONFIRM_BARS: 2
+     BULL_TP_PCT: 0.008
+     BULL_SL_PCT: 0.005
+     SIDEWAYS_TP_PCT: 0.008
+     SIDEWAYS_SL_PCT: 0.0025
+     RISK_PCT_PER_TRADE: 0.01
+     OI_SURGE_THRESH: 3.0
+     BAR_POS_SURGE_LONG: 0.6
+     BAR_POS_SURGE_SHORT: 0.4
+     FUNDING_NEUTRAL: 0.002

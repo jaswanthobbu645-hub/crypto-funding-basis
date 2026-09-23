@@ -1,0 +1,39 @@
+GROWTH TRADERS — FINAL PROJECT SUMMARY
+Generated: 2026-09-19 20:53:15.531782
+==================================================
+
+STRATEGY: Triple-Signal Mean Reversion
+  Signal 1: Funding Extreme + OI High + Price Oversold
+  Signal 2: OI Surge + Bar Momentum
+  Regime:   EMA200/EMA50/ADX gating
+  Instruments: SOL DOGE ARB SUI Perpetuals
+  Period: Sep 2022 - Sep 2024
+
+PERFORMANCE:
+  Total Trades:    872
+  Trades/Month:    36.3
+  Win Rate:        40.8%
+  Reward:Risk:     1.09:1
+  Net PnL:         -18.5%
+  Max Drawdown:    20.1%
+
+ACCEPTANCE CRITERIA:
+  Trades/month >= 30: PASS (36.3)
+  Max DD <= 20%:      FAIL (20.1%)
+  Reward:Risk > 1:    PASS (1.09)
+  Win Rate >= 45%:    FAIL (40.8%)
+  Net PnL positive:   FAIL (-18.5%)
+
+COST MODEL APPLIED:
+  Maker fee: 0.03% per entry
+  Taker fee: 0.05% per exit
+  Slippage:  0.02% per trade
+  Funding:   Historical rates every 8h
+
+DELIVERABLE FILES:
+  reports/strategy_report.html
+  trades_log.csv
+  optimization/best_params.json
+  optimization/param_search_results.csv
+  walk_forward/window_results.json
+  stress_test/stress_test_results.csv

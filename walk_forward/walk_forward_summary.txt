@@ -1,0 +1,55 @@
+Walk-Forward Validation Results
+==================================================
+
+Window 1:
+  Train: 2022-09-01 to 2024-01-01
+  Test:  2024-01-01 to 2024-03-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 10.09%
+    Sharpe Ratio: -0.80
+    Max Drawdown: 0.00%
+    Win Rate: 27.16%
+    Total Trades: 81
+    Profit Factor: 0.90
+    Trades/Month: 3.38
+
+Window 2:
+  Train: 2022-09-01 to 2024-03-01
+  Test:  2024-03-01 to 2024-05-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 9.55%
+    Sharpe Ratio: -1.49
+    Max Drawdown: 0.00%
+    Win Rate: 28.97%
+    Total Trades: 107
+    Profit Factor: 0.83
+    Trades/Month: 4.46
+
+Window 3:
+  Train: 2022-09-01 to 2024-05-01
+  Test:  2024-05-01 to 2024-07-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 7.67%
+    Sharpe Ratio: -1.94
+    Max Drawdown: 0.00%
+    Win Rate: 18.82%
+    Total Trades: 85
+    Profit Factor: 0.80
+    Trades/Month: 3.54
+
+Window 4:
+  Train: 2022-09-01 to 2024-07-01
+  Test:  2024-07-01 to 2024-09-01
+  Best Parameters: {'OI_THRESHOLD': 1.0, 'FUNDING_LONG_THRESH': -0.0005, 'FUNDING_SHORT_THRESH': 0.003, 'BOOK_LONG_THRESH': 0.6, 'BOOK_SHORT_THRESH': 0.35, 'MIN_CONFLUENCE_SCORE': 2, 'ADX_TREND_THRESH': 30, 'REGIME_CONFIRM_BARS': 2, 'BULL_TP_PCT': 0.006, 'BULL_SL_PCT': 0.005, 'SIDEWAYS_TP_PCT': 0.008, 'SIDEWAYS_SL_PCT': 0.002, 'RISK_PCT_PER_TRADE': 0.005, 'OI_SURGE_THRESH': 1.0, 'BAR_POS_SURGE_LONG': 0.6, 'BAR_POS_SURGE_SHORT': 0.3, 'FUNDING_NEUTRAL': 0.002, 'score': -999, 'net_pnl_pct': 17.576026591614074, 'sharpe_ratio': -0.7622955691520219, 'max_drawdown': 0.09855263684918912, 'win_rate': 0.44018691588785047, 'trades_per_month': 10.979320877761744}
+  Test Performance:
+    Net PnL %: 6.86%
+    Sharpe Ratio: -4.27
+    Max Drawdown: 0.00%
+    Win Rate: 18.97%
+    Total Trades: 58
+    Profit Factor: 0.43
+    Trades/Month: 2.42
+

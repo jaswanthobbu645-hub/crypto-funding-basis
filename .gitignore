@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Backups and debug
+*.bak
+*.bak2
+*.orig
+*.filtered
+*.withfilter
+debug_*.py
+verify_*.py
+test_sweep.py
+
+# Archives
+*.tar.gz
+*.zip
+
+# Junk
+NUL
+sweep.log
+run.log
+
+# Results (keep .py but not outputs)
+results_phase*/
+results_quality/
+results_optimal/
+optimization/*.csv
+stress_test/*.csv
+walk_forward/*.csv
+
+# Data (large)
+data/expanded/
