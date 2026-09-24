@@ -20,6 +20,7 @@ P_TAKER = 0.20       # 20% taker fills
 P_MISSED = 0.10      # 10% missed (no trade)
 FEE_MAKER = 0.0003   # 0.03% maker per side (problem statement)
 FEE_TAKER = 0.0005   # 0.05% taker per side
+BASE_SLIPPAGE_PER_SIDE = 0.0002  # 0.02% per side (from config.py in repo)
 
 np.random.seed(42)
 
@@ -42,18 +43,25 @@ def compute_zscore(series, window):
     return (series - m) / s.replace(0, np.nan)
 
 
-def simulate_execution_cost():
-    """Randomly decide maker/taker/missed for one round-trip."""
+def simulate_execution_cost(slippage_multiplier=1.0):
+    """Randomly decide maker/taker/missed for one round-trip and return total cost (fee + slippage)."""
     r = np.random.random()
     if r < P_MISSED:
         return None  # trade missed
     elif r < P_MISSED + P_MAKER:
-        return FEE_MAKER * 2  # maker both sides
+        fee_cost = FEE_MAKER * 2  # maker both sides
     else:
-        return FEE_TAKER * 2  # taker both sides
+        fee_cost = FEE_TAKER * 2  # taker both sides
+    
+    # Slippage: applied per side, round-trip
+    slippage_per_side = BASE_SLIPPAGE_PER_SIDE * slippage_multiplier
+    round_trip_slippage = slippage_per_side * 2
+    
+    total_cost = fee_cost + round_trip_slippage
+    return total_cost
 
 
-def backtest_asset_with_threshold(df, asset_name, min_funding):
+def backtest_asset_with_threshold(df, asset_name, min_funding, slippage_multiplier=1.0):
     df = df.copy()
     df['z'] = compute_zscore(df['fundingRate'], ZSCORE_WINDOW)
 
@@ -84,7 +92,7 @@ def backtest_asset_with_threshold(df, asset_name, min_funding):
 
             if reason:
                 # Simulate execution cost ONCE for this round-trip
-                cost = simulate_execution_cost()
+                cost = simulate_execution_cost(slippage_multiplier)
                 if cost is not None:
                     net = (fp - cost) * 100
                     trades.append({
@@ -104,7 +112,7 @@ def backtest_asset_with_threshold(df, asset_name, min_funding):
         if pos == 0:
             if z > ENTRY_Z and abs(fr) >= min_funding:
                 # Simulate execution cost ONCE for this trade attempt
-                cost = simulate_execution_cost()
+                cost = simulate_execution_cost(slippage_multiplier)
                 if cost is not None:
                     pos = -1  # short perp
                     hh = 0
@@ -112,7 +120,7 @@ def backtest_asset_with_threshold(df, asset_name, min_funding):
                     entry_time = ts
             elif z < -ENTRY_Z and abs(fr) >= min_funding:
                 # Simulate execution cost ONCE for this trade attempt
-                cost = simulate_execution_cost()
+                cost = simulate_execution_cost(slippage_multiplier)
                 if cost is not None:
                     pos = 1   # long perp
                     hh = 0
@@ -122,92 +130,193 @@ def backtest_asset_with_threshold(df, asset_name, min_funding):
     return trades
 
 
-def main():
-    print("=" * 70)
-    print("PHASE 2b: MIN_FUNDING SENSITIVITY (FIXED)")
-    print("=" * 70)
-
-    assets = load_all_assets()
-    print(f"Loaded {len(assets)} assets\n")
-
-    # Store results for each threshold
-    threshold_results = []
-
-    for mf in MIN_FUNDING_LEVELS:
-        all_trades = []
-        for name, df in assets.items():
-            t = backtest_asset_with_threshold(df, name, mf)
-            all_trades.extend(t)
-
-        if not all_trades:
-            print(f"MIN_FUNDING={mf:.4f}: No trades")
-            threshold_results.append({
-                'min_funding': mf,
-                'trades': 0,
-                'win_rate': 0.0,
-                'total_pnl': 0.0,
-                'sharpe': 0.0
-            })
-            continue
-
-        tdf = pd.DataFrame(all_trades)
-        total = tdf['net_pnl_pct'].sum()
-        wr = (tdf['net_pnl_pct'] > 0).mean() * 100
-        
-        # Calculate Sharpe
-        if len(tdf) > 1 and tdf['net_pnl_pct'].std() > 0:
-            mean_ret = tdf['net_pnl_pct'].mean()
-            std_ret = tdf['net_pnl_pct'].std()
-            # Assuming trades are hourly opportunities, annualize
-            trades_per_year = len(tdf) / 24 * 12  # monthly to yearly
-            sharpe = (mean_ret / std_ret) * np.sqrt(trades_per_year)
+def calculate_metrics(trades_df):
+    if trades_df.empty:
+        return {
+            'trades': 0,
+            'win_rate': 0.0,
+            'total_pnl': 0.0,
+            'sharpe': 0.0,
+            'max_dd': 0.0,
+            'avg_win': 0.0,
+            'avg_loss': 0.0,
+            'rr': 0.0,
+            'gross_pnl': 0.0,
+            'net_pnl': 0.0,
+            'cost_drag': 0.0,
+            'months': 0.0
+        }
+    
+    # Basic stats
+    trades = len(trades_df)
+    win_rate = (trades_df['net_pnl_pct'] > 0).mean() * 100
+    total_pnl = trades_df['net_pnl_pct'].sum()
+    
+    # Sharpe with correct annualization
+    if trades > 1:
+        # Calculate months from actual trade timestamps
+        min_time = trades_df['entry_time'].min()
+        max_time = trades_df['exit_time'].max()
+        months = (max_time - min_time).days / 30.44
+        if months > 0:
+            tpy = trades / months * 12
+            ann_factor = np.sqrt(tpy)
+            mean_ret = trades_df['net_pnl_pct'].mean()
+            std_ret = trades_df['net_pnl_pct'].std()
+            if std_ret > 0:
+                sharpe = (mean_ret / std_ret) * ann_factor
+            else:
+                sharpe = 0.0
         else:
             sharpe = 0.0
+    else:
+        sharpe = 0.0
+        months = 0.0
+    
+    # Max drawdown from equity curve (cumulative net PnL)
+    df_sorted = trades_df.sort_values('exit_time')
+    equity = df_sorted['net_pnl_pct'].cumsum()
+    rolling_max = equity.cummax()
+    drawdown = (equity - rolling_max) / rolling_max.abs().replace(0, np.nan)
+    max_dd = drawdown.min() * 100  # as percentage
+    
+    # Average win and loss
+    wins = trades_df[trades_df['net_pnl_pct'] > 0]['net_pnl_pct']
+    losses = trades_df[trades_df['net_pnl_pct'] < 0]['net_pnl_pct']
+    avg_win = wins.mean() if len(wins) > 0 else 0
+    avg_loss = abs(losses.mean()) if len(losses) > 0 else 0
+    rr = avg_win / avg_loss if avg_loss != 0 else 0
+    
+    # Gross vs net
+    gross_pnl = trades_df['funding_pnl_pct'].sum()
+    net_pnl = trades_df['net_pnl_pct'].sum()
+    cost_drag = gross_pnl - net_pnl  # or sum of cost_pct
+    
+    return {
+        'trades': trades,
+        'win_rate': win_rate,
+        'total_pnl': total_pnl,
+        'sharpe': sharpe,
+        'max_dd': max_dd,
+        'avg_win': avg_win,
+        'avg_loss': avg_loss,
+        'rr': rr,
+        'gross_pnl': gross_pnl,
+        'net_pnl': net_pnl,
+        'cost_drag': cost_drag,
+        'months': months
+    }
 
-        print(f"MIN_FUNDING={mf:.4f}: {len(tdf):4d} trades, "
-              f"WR {wr:5.1f}%, "
-              f"PnL {total:+7.2f}%, "
-              f"Sharpe {sharpe:5.2f}")
 
-        threshold_results.append({
-            'min_funding': mf,
-            'trades': len(tdf),
-            'win_rate': wr,
-            'total_pnl': total,
-            'sharpe': sharpe
-        })
-
-        # Save trades for this threshold
-        if len(tdf) > 0:
-            mf_str = f'{mf:.4f}'.replace('.', '_')
-            trades_file = os.path.join(OUTPUT_DIR, f'multi_asset_trades_mf{mf_str}.csv')
-            tdf.to_csv(trades_file, index=False)
-            print(f"  -> Trades saved to {trades_file}")
-
-    # Print summary table
-    print("\n" + "=" * 70)
-    print("SUMMARY BY MIN_FUNDING THRESHOLD")
+def main():
     print("=" * 70)
-    print(f"{'Min Funding':<12} {'Trades':<8} {'Win Rate':<10} {'Total PnL':<12} {'Sharpe':<8}")
-    print("-" * 70)
-    for res in threshold_results:
-        print(f"{res['min_funding']:<12.4f} {res['trades']:<8} {res['win_rate']:<10.1f} "
-              f"{res['total_pnl']:<12.2f} {res['sharpe']:<8.2f}")
-
-    # Save summary
+    print("PHASE 2: ADDING MISSING METRICS AND SLIPPAGE SENSITIVITY")
+    print("=" * 70)
+    
+    assets = load_all_assets()
+    print(f"Loaded {len(assets)} assets\n")
+    
+    # Slippage multipliers to test
+    slippage_multipliers = [0.5, 1.0, 1.5]
+    slippage_labels = ['0.5x', '1.0x', '1.5x']
+    
+    # Store all results
+    all_results = []
+    
+    for sm, label in zip(slippage_multipliers, slippage_labels):
+        print(f"\n{'='*20} SLIPPAGE {label} {'='*20}")
+        threshold_results = []
+        
+        for mf in MIN_FUNDING_LEVELS:
+            all_trades = []
+            for name, df in assets.items():
+                t = backtest_asset_with_threshold(df, name, mf, sm)
+                all_trades.extend(t)
+            
+            if not all_trades:
+                print(f"MIN_FUNDING={mf:.4f}: No trades")
+                threshold_results.append({
+                    'min_funding': mf,
+                    'trades': 0,
+                    'win_rate': 0.0,
+                    'total_pnl': 0.0,
+                    'sharpe': 0.0,
+                    'max_dd': 0.0,
+                    'avg_win': 0.0,
+                    'avg_loss': 0.0,
+                    'rr': 0.0,
+                    'gross_pnl': 0.0,
+                    'net_pnl': 0.0,
+                    'cost_drag': 0.0,
+                    'months': 0.0
+                })
+                continue
+            
+            tdf = pd.DataFrame(all_trades)
+            metrics = calculate_metrics(tdf)
+            metrics['min_funding'] = mf
+            metrics['slippage'] = label
+            threshold_results.append(metrics)
+            
+            print(f"MIN_FUNDING={mf:.4f}: {metrics['trades']:4d} trades, "
+                  f"WR {metrics['win_rate']:5.1f}%, "
+                  f"PnL {metrics['total_pnl']:+7.2f}%, "
+                  f"Sharpe {metrics['sharpe']:5.2f}, "
+                  f"MaxDD {metrics['max_dd']:6.2f}%, "
+                  f"R:R {metrics['rr']:4.2f}")
+            
+            # Save trades for this threshold and slippage
+            if len(tdf) > 0:
+                mf_str = f'{mf:.4f}'.replace('.', '_')
+                trades_file = os.path.join(OUTPUT_DIR, f'multi_asset_trades_mf{mf_str}_slip{label}.csv')
+                tdf.to_csv(trades_file, index=False)
+        
+        all_results.extend(threshold_results)
+        
+        # Print summary table for this slippage
+        print(f"\n--- SUMMARY FOR SLIPPAGE {label} ---")
+        print(f"{'Min Funding':<12} {'Trades':<8} {'Win Rate':<10} {'Total PnL':<12} {'Sharpe':<8} {'Max DD':<10} {'R:R':<8}")
+        print("-" * 70)
+        for res in threshold_results:
+            print(f"{res['min_funding']:<12.4f} {res['trades']:<8} {res['win_rate']:<10.1f} "
+                  f"{res['total_pnl']:<12.2f} {res['sharpe']:<8.2f} {res['max_dd']:<10.2f} {res['rr']:<8.2f}")
+    
+    # Save full report
+    report_file = os.path.join(OUTPUT_DIR, 'metrics_full_report.txt')
+    with open(report_file, 'w') as f:
+        f.write("METRICS FULL REPORT\n")
+        f.write("=" * 80 + "\n\n")
+        for sm, label in zip(slippage_multipliers, slippage_labels):
+            f.write(f"SLIPPAGE MULTIPLIER: {label}\n")
+            f.write("-" * 40 + "\n")
+            f.write(f"{'MF':<10} {'Trades':<8} {'WR%':<8} {'PnL%':<10} {'Sharpe':<8} {'MaxDD%':<10} {'R:R':<8} {' Gross%':<10} {' Net%':<10} {'Cost%':<10} {'Months':<8}\n")
+            f.write("-" * 100 + "\n")
+            for res in all_results:
+                if res['slippage'] == label:
+                    f.write(f"{res['min_funding']:<10.4f} {res['trades']:<8} {res['win_rate']:<8.1f} "
+                          f"{res['total_pnl']:<10.2f} {res['sharpe']:<8.2f} {res['max_dd']:<10.2f} "
+                          f"{res['rr']:<8.2f} {res['gross_pnl']:<10.2f} {res['net_pnl']:<10.2f} "
+                          f"{res['cost_drag']:<10.2f} {res['months']:<8.1f}\n")
+            f.write("\n")
+    
+    print(f"\nFull report saved to {report_file}")
+    
+    # Also save a summary of the best configuration per slippage
     summary_file = os.path.join(OUTPUT_DIR, 'multi_asset_summary.txt')
     with open(summary_file, 'w') as f:
-        f.write("MIN_FUNDING SENSITIVITY SUMMARY\n")
-        f.write("=" * 50 + "\n")
-        for res in threshold_results:
-            f.write(f"Min Funding: {res['min_funding']:.4f}\n")
-            f.write(f"  Trades: {res['trades']}\n")
-            f.write(f"  Win Rate: {res['win_rate']:.1f}%\n")
-            f.write(f"  Total PnL: {res['total_pnl']:.2f}%\n")
-            f.write(f"  Sharpe: {res['sharpe']:.2f}\n")
-            f.write("-" * 30 + "\n")
-
-    print(f"\nSummary saved to {summary_file}")
+        f.write("MIN_FUNDING SENSITIVITY SUMMARY (with slippage sensitivity)\n")
+        f.write("=" * 60 + "\n\n")
+        for sm, label in zip(slippage_multipliers, slippage_labels):
+            f.write(f"Slippage {label}:\n")
+            f.write(f"{'Min Funding':<12} {'Trades':<8} {'Win Rate':<10} {'Total PnL':<12} {'Sharpe':<8} {'Max DD':<10} {'R:R':<8}\n")
+            f.write("-" * 70 + "\n")
+            for res in all_results:
+                if res['slippage'] == label:
+                    f.write(f"{res['min_funding']:<12.4f} {res['trades']:<8} {res['win_rate']:<10.1f} "
+                          f"{res['total_pnl']:<12.2f} {res['sharpe']:<8.2f} {res['max_dd']:<10.2f} {res['rr']:<8.2f}\n")
+            f.write("\n")
+    
+    print(f"Summary saved to {summary_file}")
 
 
 if __name__ == '__main__':
