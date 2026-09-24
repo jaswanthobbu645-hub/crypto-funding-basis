@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# Load the winning trades file (MF=0.0005, slippage 1.0x from baseline)
-trades_file = 'results_phase2/multi_asset_trades_mf0_0005_slip1.0x.csv'
+# Load the winning trades file (MF=0.0003 from chosen config, baseline slippage)
+trades_file = 'results_phase2/multi_asset_trades_mf0_0003_slip1.0x.csv'
 if not os.path.exists(trades_file):
     # Fallback to any available trades file
     import glob
@@ -16,6 +16,10 @@ if not os.path.exists(trades_file):
 
 df = pd.read_csv(trades_file)
 print(f"Loaded {len(df)} trades from {trades_file}")
+
+# Ensure we have datetime columns
+df['entry_time'] = pd.to_datetime(df['entry_time'])
+df['exit_time'] = pd.to_datetime(df['exit_time'])
 
 # Extract returns (net_pnl_pct column, convert to decimal)
 returns = df['net_pnl_pct'].values / 100.0
