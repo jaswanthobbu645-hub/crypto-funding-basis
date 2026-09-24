@@ -175,10 +175,10 @@ def calculate_metrics(trades_df):
     
     # Max drawdown from equity curve (cumulative net PnL)
     df_sorted = trades_df.sort_values('exit_time')
-    equity = df_sorted['net_pnl_pct'].cumsum()
-    rolling_max = equity.cummax()
-    drawdown = (equity - rolling_max) / rolling_max.abs().replace(0, np.nan)
-    max_dd = drawdown.min() * 100  # as percentage
+    cum = df_sorted['net_pnl_pct'].cumsum()  # in percent
+    peak = np.maximum.accumulate(cum)
+    dd = cum - peak  # in percent
+    max_dd = dd.min()  # already in percent (negative or zero)
     
     # Average win and loss
     wins = trades_df[trades_df['net_pnl_pct'] > 0]['net_pnl_pct']

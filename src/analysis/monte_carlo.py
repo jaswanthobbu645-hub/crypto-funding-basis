@@ -3,14 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# Load the winning trades file (MF=0.0003 from Phase 1)
-trades_file = 'results_phase2/multi_asset_trades_mf0_0003.csv'
+# Load the winning trades file (MF=0.0005, slippage 1.0x from baseline)
+trades_file = 'results_phase2/multi_asset_trades_mf0_0005_slip1.0x.csv'
 if not os.path.exists(trades_file):
     # Fallback to any available trades file
     import glob
-    files = glob.glob('results_phase2/multi_asset_trades_mf*.csv')
+    files = glob.glob('results_phase2/multi_asset_trades_mf*_slip1.0x.csv')
     if not files:
-        raise FileNotFoundError("No trades file found in results_phase2/")
+        raise FileNotFoundError("No trades file found for slippage 1.0x in results_phase2/")
     trades_file = files[0]
     print(f"Using fallback trades file: {trades_file}")
 

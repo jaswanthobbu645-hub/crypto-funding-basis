@@ -8,7 +8,8 @@ from datetime import timedelta
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../strategy'))
 from multi_asset import backtest_asset_with_threshold, load_all_assets
 
-MF_CANDIDATES = [0.0002, 0.0003, 0.0004, 0.0005]
+# CHOSEN CONFIG: MF=0.0003 (from frequency_report_v2.txt, trades/month=42.54 >=30, highest Sharpe among those)
+MF_CANDIDATES = [0.0003]  # ONLY THE CHOSEN CONFIG
 TRAIN_MONTHS = 6
 TEST_MONTHS = 2
 # We'll roll the window by 1 month each step
@@ -38,10 +39,10 @@ def calculate_max_dd(trades_df):
     if trades_df.empty:
         return 0.0
     df_sorted = trades_df.sort_values('exit_time')
-    equity = df_sorted['net_pnl_pct'].cumsum()
-    rolling_max = equity.cummax()
-    drawdown = (equity - rolling_max) / rolling_max.abs().replace(0, np.nan)
-    return drawdown.min() * 100  # as percentage
+    cum = df_sorted['net_pnl_pct'].cumsum()  # in percent
+    peak = np.maximum.accumulate(cum)
+    dd = cum - peak  # in percent
+    return dd.min()  # already in percent (negative or zero)
 
 def main():
     print("Loading assets...")
@@ -74,7 +75,7 @@ def main():
         window_count += 1
         print(f"Window {window_count}: Train {window_start.date()} to {train_end.date()}, Test {train_end.date()} to {test_end.date()}")
         
-        # --- TRAINING: pick best MF by Sharpe on training data ---
+        # --- TRAINING: pick best MF by Sharpe on training data (now only one MF) ---
         best_mf = None
         best_sharpe = -np.inf
         best_train_trades = None

@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 import os
 from datetime import datetime
 
-# Load the winning trades file (MF=0.0003 from Phase 1)
-trades_file = 'results_phase2/multi_asset_trades_mf0_0003.csv'
+# Load the winning trades file (MF=0.0003 from chosen config, baseline slippage)
+trades_file = 'results_phase2/multi_asset_trades_mf0_0003_slip1.0x.csv'
 if not os.path.exists(trades_file):
     # Fallback to any available trades file
     import glob
-    files = glob.glob('results_phase2/multi_asset_trades_mf*.csv')
+    files = glob.glob('results_phase2/multi_asset_trades_mf*_slip1.0x.csv')
     if not files:
-        raise FileNotFoundError("No trades file found in results_phase2/")
+        raise FileNotFoundError("No trades file found for slippage 1.0x in results_phase2/")
     trades_file = files[0]
     print(f"Using fallback trades file: {trades_file}")
 
@@ -27,11 +27,10 @@ df = df.sort_values('exit_time').reset_index(drop=True)
 
 # Calculate cumulative net PnL (in percent)
 df['cum_pnl'] = df['net_pnl_pct'].cumsum()
-
-# Calculate drawdown: (equity - running_max) / running_max
-running_max = df['cum_pnl'].cummax()
-drawdown = (df['cum_pnl'] - running_max) / running_max.abs().replace(0, np.nan)
-df['drawdown'] = drawdown * 100  # as percentage
+# Calculate drawdown: (cum - running_max) in percent (additive)
+running_max = np.maximum.accumulate(df['cum_pnl'])
+drawdown = df['cum_pnl'] - running_max  # in percent
+df['drawdown'] = drawdown  # already in percent
 
 # For rolling Sharpe, we need to compute Sharpe over a window of trades.
 # We'll use a window of 30 trades (approx) and annualize based on trade frequency.
@@ -106,11 +105,12 @@ ax.grid(True, alpha=0.3)
 
 # 3. Trade histogram (PnL distribution)
 ax = axes[1, 0]
+mean_val = df['net_pnl_pct'].mean()
 ax.hist(df['net_pnl_pct'], bins=50, alpha=0.7, edgecolor='black')
 ax.set_title('Trade PnL Distribution')
 ax.set_xlabel('PnL per Trade (%)')
 ax.set_ylabel('Frequency')
-ax.axvline(df['net_pnl_pct'].mean(), color='red', linestyle='--', label=f'Mean: {df["net_pnl_pct"].mean():.2f}%')
+ax.axvline(mean_val, color='red', linestyle='--', label=f'Mean: {mean_val:.2f}%')
 ax.axvline(0, color='black', linestyle='-')
 ax.legend()
 ax.grid(True, alpha=0.3)
@@ -167,13 +167,30 @@ with open(stats_file, 'w') as f:
     f.write("TEARSHEET SUMMARY STATISTICS\n")
     f.write("=" * 40 + "\n")
     f.write(f"Number of trades: {len(df)}\n")
-    f.write(f"Date range: {df['exit_time'].min()} to {df['exit_time'].max()}\n")
+    # Calculate months from data
+    min_time = df['entry_time'].min()
+    max_time = df['exit_time'].max()
+    months = (max_time - min_time).days / 30.44
+    trades_per_month = len(df) / months if months > 0 else 0
+    f.write(f"Date range: {min_time} to {max_time}\n")
+    f.write(f"Months: {months:.2f}\n")
+    f.write(f"Trades/month: {trades_per_month:.2f}\n")
     f.write(f"Total net PnL: {df['net_pnl_pct'].sum():.2f}%\n")
-    f.write(f"Sharpe ratio (annualized): {df['net_pnl_pct'].mean() / df['net_pnl_pct'].std() * np.sqrt(len(df) / ((df['exit_time'].max() - df['exit_time'].min()).days / 30.44 * 12)):.2f}\n")
+    # Calculate Sharpe with correct annualization
+    returns = df['net_pnl_pct'].values / 100.0  # decimal
+    mean_ret = np.mean(returns)
+    std_ret = np.std(returns, ddof=1)
+    tpy = len(returns) / months * 12 if months > 0 else 0
+    ann_factor = np.sqrt(tpy) if tpy > 0 else 0
+    sharpe = mean_ret / std_ret * ann_factor if std_ret != 0 else 0
+    f.write(f"Sharpe ratio (annualized): {sharpe:.2f}\n")
     f.write(f"Win rate: {(df['net_pnl_pct'] > 0).mean() * 100:.1f}%\n")
     f.write(f"Max drawdown: {df['drawdown'].min():.2f}%\n")
     f.write(f"Average win: {df[df['net_pnl_pct'] > 0]['net_pnl_pct'].mean():.2f}%\n")
     f.write(f"Average loss: {abs(df[df['net_pnl_pct'] < 0]['net_pnl_pct'].mean()):.2f}%\n")
-    f.write(f"R:R: {df[df['net_pnl_pct'] > 0]['net_pnl_pct'].mean() / abs(df[df['net_pnl_pct'] < 0]['net_pnl_pct'].mean()):.2f}\n")
+    avg_win = df[df['net_pnl_pct'] > 0]['net_pnl_pct'].mean()
+    avg_loss = abs(df[df['net_pnl_pct'] < 0]['net_pnl_pct'].mean())
+    rr = avg_win / avg_loss if avg_loss != 0 else 0
+    f.write(f"R:R: {rr:.2f}\n")
 
 print(f"Tearsheet stats saved to {stats_file}")
