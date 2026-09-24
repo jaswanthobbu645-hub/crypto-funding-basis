@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import os
 from datetime import datetime
 
-# Load the winning trades file (MF=0.0003 from chosen config, baseline slippage)
-trades_file = 'results_phase2/multi_asset_trades_mf0_0003_slip1.0x.csv'
+# Load the winning trades file (MF=0.0004 from chosen config, baseline slippage)
+trades_file = 'results_phase2/multi_asset_trades_mf0_0004_slip1.0x.csv'
 if not os.path.exists(trades_file):
     # Fallback to any available trades file
     import glob

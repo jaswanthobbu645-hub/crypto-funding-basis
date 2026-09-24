@@ -8,8 +8,8 @@ from datetime import timedelta
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../strategy'))
 from multi_asset import backtest_asset_with_threshold, load_all_assets
 
-# CHOSEN CONFIG: MF=0.0003 (from frequency_report_v2.txt, trades/month=42.54 >=30, highest Sharpe among those)
-MF_CANDIDATES = [0.0003]  # ONLY THE CHOSEN CONFIG
+# TEST ALL MF CANDIDATES
+MF_CANDIDATES = [0.0002, 0.0003, 0.0004, 0.0005]
 TRAIN_MONTHS = 6
 TEST_MONTHS = 2
 # We'll roll the window by 1 month each step
@@ -75,7 +75,7 @@ def main():
         window_count += 1
         print(f"Window {window_count}: Train {window_start.date()} to {train_end.date()}, Test {train_end.date()} to {test_end.date()}")
         
-        # --- TRAINING: pick best MF by Sharpe on training data (now only one MF) ---
+        # --- TRAINING: pick best MF by Sharpe on training data ---
         best_mf = None
         best_sharpe = -np.inf
         best_train_trades = None
@@ -85,6 +85,7 @@ def main():
             for asset_name, df in assets.items():
                 # Filter data to training period
                 mask = (df['timestamp'] >= window_start) & (df['timestamp'] < train_end)
+                df_train = df.loc[  df['timestamp'] < train_end]
                 df_train = df.loc[mask].copy()
                 if df_train.empty:
                     continue

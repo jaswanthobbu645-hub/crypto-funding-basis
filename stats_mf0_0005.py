@@ -5,16 +5,11 @@ from scipy.stats import norm
 import statsmodels.api as sm
 import os
 
-# Load the winning trades file (MF=0.0004 from stats)
-trades_file = 'results_phase2/multi_asset_trades_mf0_0004_slip1.0x.csv'
+# Run stats on MF=0.0005
+trades_file = 'results_phase2/multi_asset_trades_mf0_0005_slip1.0x.csv'
 if not os.path.exists(trades_file):
-    # Fallback to any available trades file
-    import glob
-    files = glob.glob('results_phase2/multi_asset_trades_mf*_slip1.0x.csv')
-    if not files:
-        raise FileNotFoundError("No trades file found for slippage 1.0x in results_phase2/")
-    trades_file = files[0]
-    print(f"Using fallback trades file: {trades_file}")
+    print(f"File not found: {trades_file}")
+    exit(1)
 
 df = pd.read_csv(trades_file)
 print(f"Loaded {len(df)} trades from {trades_file}")
@@ -116,49 +111,3 @@ print(f"  Expected maximum (per trade): {expected_max_sr:.4f}")
 print(f"  DSR: {dsr:.4f}")
 print(f"  p-value: {p_value_dsr:.4f}")
 print(f"  Survives (p < 0.05)? {p_value_dsr < 0.05}")
-
-# Save results to file
-output_dir = 'results_phase2'
-os.makedirs(output_dir, exist_ok=True)
-output_file = os.path.join(output_dir, 'statistical_tests_output.txt')
-with open(output_file, 'w') as f:
-    f.write("STATISTICAL TESTS OUTPUT\n")
-    f.write("=" * 50 + "\n\n")
-    f.write(f"Trades file: {trades_file}\n")
-    f.write(f"Number of trades: {len(df)}\n")
-    f.write(f"Date range: {min_time} to {max_time}\n")
-    f.write(f"Months: {months:.2f}\n")
-    f.write(f"Trades per year (tpy): {tpy:.2f}\n")
-    f.write(f"Annualization factor: {ann_factor:.2f}\n\n")
-    f.write("RETURNS STATISTICS\n")
-    f.write("-" * 30 + "\n")
-    f.write(f"Mean return (per trade): {mean_ret:.6f}\n")
-    f.write(f"Std return (per trade): {std_ret:.6f}\n")
-    f.write(f"Skew: {skew_val:.4f}\n")
-    f.write(f"Kurtosis (excess): {kurt_val:.4f}\n\n")
-    f.write("PLAIN T-TEST\n")
-    f.write("-" * 30 + "\n")
-    f.write(f"t-statistic: {t_stat_plain:.4f}\n")
-    f.write(f"p-value: {p_value_plain:.4f}\n\n")
-    f.write("NEWEY-WEST HAC (maxlags=5)\n")
-    f.write("-" * 30 + "\n")
-    f.write(f"t-statistic: {t_stat_hac:.4f}\n")
-    f.write(f"p-value: {p_value_hac:.4f}\n\n")
-    f.write(f"BLOCK BOOTSTRAP (block={block_size}, {n_boot} iters)\n")
-    f.write("-" * 30 + "\n")
-    f.write(f"95% CI for mean return: [{ci_lower:.6f}, {ci_upper:.6f}]\n")
-    f.write(f"CI excludes zero? {ci_lower > 0 or ci_upper < 0}\n\n")
-    f.write("DEFLATED SHARPE RATIO\n")
-    f.write("-" * 30 + "\n")
-    f.write(f"Number of trades (n): {n_trades}\n")
-    f.write(f"Number of trials (n_trials): {n_trials}\n")
-    f.write(f"Skew: {skew_val:.4f}\n")
-    f.write(f"Kurtosis (excess): {kurt_val:.4f}\n")
-    f.write(f"Sharpe ratio (per trade): {sr_per_trade:.4f}\n")
-    f.write(f"Sharpe ratio std (sr_std): {sr_std:.4f}\n")
-    f.write(f"Expected maximum (per trade): {expected_max_sr:.4f}\n")
-    f.write(f"DSR: {dsr:.4f}\n")
-    f.write(f"p-value: {p_value_dsr:.4f}\n")
-    f.write(f"Survives (p < 0.05)? {p_value_dsr < 0.05}\n")
-
-print(f"\nResults saved to {output_file}")
