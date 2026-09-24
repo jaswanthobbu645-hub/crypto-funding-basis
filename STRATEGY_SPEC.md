@@ -1,100 +1,79 @@
-# Strategy Specification: Funding Rate Basis Harvest v2.0
+# Strategy Specification: Crypto Funding Basis Harvest
 
-## Executive Summary
+## Core Logic
+The strategy takes delta-neutral positions in cryptocurrency perpetual futures to capture funding rate anomalies.
 
-Delta-neutral funding rate strategy. Captures funding rate payments when 
-funding reaches statistically extreme levels (crowded positioning).
+### Position
+- **Long spot + short perp** when funding rate is excessively positive (perps trading at premium)
+- **Short spot + long perp** when funding rate is excessively negative (perps trading at discount)
+- **Delta-neutral**: The spot and perpetual positions offset each other, eliminating directional exposure to price movements.
 
-- Universe: 14 perpetual futures (SEI, APT, FIL, WIF, LINK, INJ, SOL, 
-  OP, TIA, SUI, DOGE, ARB, NEAR, AVAX)
-- Trades/month: 20.0
-- Unlevered PnL/year: +6.6%
-- Sharpe ratio: 2.87 (institutional-grade)
-- Walk-forward: 6/6 positive windows
+### Signal Generation
+1. Calculate the funding rate z-score over a rolling window:
+   ```
+   z-score = (funding_rate - mean(funding_rate)) / std(funding_rate)
+   ```
+   where mean and standard deviation are computed over `Z_WINDOW` periods.
+2. Enter a position when the absolute z-score exceeds the entry threshold (`EZ`):
+   - If z-score > `+EZ`: short perp, long spot
+   - If z-score < `-EZ`: long perp, short spot
+3. Exit the position when:
+   - The absolute z-score falls below the exit threshold (`XZ`), OR
+   - The position has been held for `MAX_HOLD` hours, whichever comes first.
 
-## Signal
+## Parameters
+| Parameter | Value | Description |
+|-----------|-------|-------------|
+| `EZ` | 1.2 | Entry threshold (z-score absolute value) |
+| `XZ` | 0.5 | Exit threshold (z-score absolute value) |
+| `Z_WINDOW` | 720 | Lookback window in hours (30 days of hourly data) |
+| `MAX_HOLD` | 24 | Maximum position hold time in hours |
+| `MF` | 0.0004 | Minimum funding rate magnitude filter (absolute value) |
 
-Funding Rate Z-Score:
-  Z = (current funding - 30-day rolling mean) / 30-day rolling std
+*Note: Only trades where the absolute funding rate exceeds `MF` are considered for entry, even if the z-score condition is met.*
 
-Computed hourly on rolling 720-hour window (30 days).
+## Universe
+- **Assets**: 39 Binance USDT-margined perpetual futures contracts with >12 months of funding history
+- **Assets List**: BTC, ETH, BNB, XRP, ADA, MATIC, DOT, LTC, TRX, ATOM, ETC, BCH, ICP, HBAR, VET, ALGO, FTM, GRT, SAND, MANA, AXS, EGLD, THETA, RUNE, AAVE, UNI, APT, ARB, OP, INJ, LINK, NEAR, SOL, SUI, TIA, WIF, FIL, AVAX
+- **Data Period**: 2024-10-09 to 2026-09-22 (23.39 months)
+- **Data Source**: Binance funding rate and mark price data (hourly intervals)
 
-## Entry Rules
+## Cost Model
+All costs are applied per round-trip (entry + exit):
 
-SHORT Perp + LONG Spot when:
-- Z-score > +0.8
-- AND |funding rate| >= 0.03% per 8h
+| Cost Type | Rate | Notes |
+|-----------|------|-------|
+| **Maker Fee** | 0.03% | Charged when providing liquidity (limit orders) |
+| **Taker Fee** | 0.05% | Charged when taking liquidity (market orders) |
+| **Slippage** | 0.02% per side | Assumed baseline; tested at 0.5x, 1.0x, 1.5x multipliers |
+| **Execution Model** | 70% maker, 20% taker, 10% missed | Order fill assumption |
+| **Funding Payment** | Received/paid every 8 hours | Based on position size and prevailing funding rate |
 
-LONG Perp + SHORT Spot when:
-- Z-score < -0.8
-- AND |funding rate| >= 0.03% per 8h
+### Total Cost Per Round-Trip
+- **Fees**: (0.7 × 0.03% + 0.2 × 0.05%) × 2 sides = 0.082%
+- **Slippage**: 0.02% × 2 sides = 0.04%
+- **Total**: 0.122% per round-trip (baseline slippage)
 
-Both positions equal notional (delta-neutral).
+## Entry/Exit Logic (Precise)
+1. **At each hourly bar** (timestamp `t`):
+   - Calculate the funding rate z-score using the previous `Z_WINDOW` hours of funding rate data.
+   - Check if the absolute funding rate at `t` exceeds `MF` (to avoid noisy signals from near-zero funding).
+   - If both conditions are met and no position is open:
+     - If z-score > `+EZ`: open short perp + long spot position at the close of bar `t`.
+     - If z-score < `-EZ`: open long perp + short spot position at the close of bar `t`.
+2. **Position Monitoring** (while position is open):
+   - At each subsequent hourly bar, check:
+     - If the absolute z-score falls below `XZ`: close position at the close of the current bar.
+     - Else if the position has been open for `MAX_HOLD` hours: close position at the close of the current bar.
+   - Upon exit, realize the funding PnL accumulated since entry and close the spot/perp positions at the close price.
 
-## Exit Rules
+## Assumptions
+- **Execution**: Trades are executed at the close of the hourly bar when the signal triggers.
+- **Funding Accrual**: Funding payments are accrued continuously and realized upon position closure.
+- **No Leverage**: The strategy assumes 1x leverage (no margin borrowing beyond the spot position).
+- **No Liquidation Risk**: Delta-neutral position minimizes liquidation risk under normal market conditions.
+- **Data Integrity**: Hourly funding rate and price data are accurate and survivorship-bias free.
 
-- Z-score reverts to ±0.3 (signal invalidation)
-- OR 24-hour time stop
-- Whichever occurs first
-
-## Cost Model (Problem Statement Compliant)
-
-- Maker fee: 0.03% per side
-- Taker fee: 0.05% per side
-- Realistic fills: 70% maker, 20% taker, 5% missed
-- Funding collected every 8 hours (00:00, 08:00, 16:00 UTC)
-
-## Backtest Results (Sep 2022 - Sep 2024, 24 months)
-
-| Metric | Value |
-|--------|-------|
-| Total trades | 479 |
-| Trades/month | 20.0 |
-| Win rate | 52.0% |
-| Total PnL | +13.23% |
-| PnL/year (unlevered) | +6.6% |
-| Sharpe ratio | 2.87 |
-
-## Walk-Forward Validation
-
-All 6 non-overlapping 3-month windows positive.
-
-## Leverage Analysis (Indian Investor Perspective)
-
-| Leverage | Pre-Tax | Post-Tax (30%) | vs G-Sec (7%) |
-|----------|---------|----------------|---------------|
-| 1x | +6.6% | +4.6% | -2.4% (NOT worth) |
-| 3x | +19.8% | +13.9% | +6.9% (WORTH IT) |
-| 5x | +33.0% | +23.1% | +16.1% (EXCELLENT) |
-| 8x | +52.8% | +37.0% | +30.0% (EXCELLENT) |
-
-Delta-neutral position supports 3-5x leverage safely. Sharpe 2.87 
-implies low probability of sustained drawdown.
-
-## Known Limitations
-
-1. Thin edge unlevered: +6.6% is below India's 7% G-Sec
-2. Requires 3-5x leverage to be personally viable
-3. ARB and SEI concentration risk documented
-4. No live paper trading deployed yet
-5. Requires 30% crypto tax compliance
-
-## Future Work (HFT-Grade Roadmap)
-
-1. Add CVD (Cumulative Volume Delta) signal — requires raw taker data
-2. Add OI change signal — requires OI history
-3. Cross-exchange funding arbitrage — Binance vs Bybit vs OKX
-4. Order book imbalance — requires L2 data
-5. Live deployment with monitoring dashboard
-6. Multi-leg portfolio optimization (Kelly sizing)
-
-## Files Reference
-
-- 12_multi_asset_strategy.py — Main strategy backtest
-- 16_asset_quality.py — Asset quality scoring
-- 17_atr_regime.py — ATR regime filter test
-- 18_volume_momentum_test.py — Volume/momentum test
-- 19_subset_test.py — Asset subset comparison
-- 20_leverage_analysis.py — Leverage analysis
-
-================================================================================
+## References
+- The implementation follows the methodology described in the repository's source code, primarily in `src/strategy/multi_asset.py`.
+- For exact calculations, refer to the commented source code.
