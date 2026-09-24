@@ -1,0 +1,25 @@
+======================================================================
+PHASE 2b: MIN_FUNDING SENSITIVITY (FIXED)
+======================================================================
+Loaded 39 assets
+
+MIN_FUNDING=0.0002: 1723 trades, WR  39.7%, PnL  +13.51%, Sharpe  1.48
+  -> Trades saved to results_phase2\multi_asset_trades_mf0_0002.csv
+MIN_FUNDING=0.0003: 1008 trades, WR  52.7%, PnL  +43.19%, Sharpe  4.60
+  -> Trades saved to results_phase2\multi_asset_trades_mf0_0003.csv
+MIN_FUNDING=0.0004:  592 trades, WR  65.5%, PnL  +47.64%, Sharpe  5.26
+  -> Trades saved to results_phase2\multi_asset_trades_mf0_0004.csv
+MIN_FUNDING=0.0005:  341 trades, WR  75.1%, PnL  +46.64%, Sharpe  5.59
+  -> Trades saved to results_phase2\multi_asset_trades_mf0_0005.csv
+
+======================================================================
+SUMMARY BY MIN_FUNDING THRESHOLD
+======================================================================
+Min Funding  Trades   Win Rate   Total PnL    Sharpe  
+----------------------------------------------------------------------
+0.0002       1723     39.7       13.51        1.48    
+0.0003       1008     52.7       43.19        4.60    
+0.0004       592      65.5       47.64        5.26    
+0.0005       341      75.1       46.64        5.59    
+
+Summary saved to results_phase2\multi_asset_summary.txt
