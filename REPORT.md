@@ -48,7 +48,7 @@ Individual trade PnL distribution shows a positive mean with right skew, indicat
 *Figure 3: Trade PnL histogram with mean (green) and break-even (red) lines*
 
 ### Asset Contribution
-PnL is distributed across multiple assets, with the top asset contributing approximately 49% of total profits.
+PnL is distributed across multiple assets, with the top asset (AXS) contributing 63.0% of total profits.
 
 ![PnL by Asset](charts/05_pnl_by_asset.png)
 *Figure 4: Horizontal bar chart of PnL contribution by asset (top 15)*
@@ -62,7 +62,7 @@ PnL is distributed across multiple assets, with the top asset contributing appro
 - **Deflated Sharpe Ratio (DSR)**: 3.4180, p = 0.0003 (survives multiple testing bias correction)
 
 ### Walk-Forward Analysis
-The strategy was validated using a 6-month training, 2-month testing walk-forward approach with monthly rebalancing. All four MF candidates (0.0002, 0.0003, 0.0004, 0.0005) were evaluated each window, with selection based on highest training Sharpe ratio.
+Walk-forward validation used 6-month training and 2-month test windows, rolling monthly (17 windows). All four MF candidates were evaluated on training data; the optimizer selected MF=0.0005 in every window, which suggests the tight-threshold config dominates across regimes. Out-of-sample, 12 of 17 windows (70.6%) were positive with median test Sharpe 6.42. This is a positive result, though the lack of MF diversity across windows limits the strength of the optimizer validation.
 
 ![Walk-Forward Test Sharpe](charts/06_walk_forward.png)
 *Figure 5: Test Sharpe ratio per walk-forward window (green = positive, red = negative)*
@@ -84,7 +84,7 @@ Average losing trade: -0.25%
 R:R ratio: 2.70
 
 ### Concentration Analysis
-Top asset (INJ) accounts for 49.31% of total PnL, below the 50% threshold for excessive concentration.
+Top asset (AXS) accounts for 63.0% of total PnL, above the 50% threshold for excessive concentration. This is a concentration risk: the strategy's net profit relies materially on one asset. Mitigation would involve position-size caps per asset or excluding assets whose PnL share exceeds 20%, at the cost of lower overall return.
 
 ## Frequency/Edge Tradeoff
 
@@ -103,8 +103,12 @@ Our selected configuration (MF=0.0004) represents the optimal balance, achieving
 - Funding rate data is assumed to be accurate and without lookup bias.
 - The universe consists of perpetual futures with sufficient liquidity; some assets may have higher transaction costs in practice.
 - The walk-forward test shows mixed performance across windows, with 70.6% of windows profitable.
-- Concentration analysis shows top asset (INJ) accounts for a significant portion of total PnL.
-- 76% of net PnL occurred in 2026 only, indicating edge is concentrated in the most recent 9 months.
+- Net PnL is concentrated entirely in 2026. Specifically:
+  2024: -3.39% (negative)
+  2025: +0.59% (essentially flat)
+  2026: +24.99% (all net profit)
+  Of the +22.19% total, +20.83% came from 2026Q1 alone (94% of total).
+  This indicates the edge is regime-dependent and concentrated in a single quarter. Out-of-sample performance in earlier regimes (2024-2025) is flat-to-negative. This is a material limitation and the strategy should not be treated as a persistent, all-weather edge without further validation.
 
 ## Conclusion
 
