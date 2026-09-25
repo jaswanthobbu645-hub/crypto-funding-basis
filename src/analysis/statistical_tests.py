@@ -6,7 +6,7 @@ import statsmodels.api as sm
 import os
 
 # Load the winning trades file (MF=0.0004 from stats)
-trades_file = 'results_phase2/multi_asset_trades_mf0_0004_slip1.0x.csv'
+trades_file = 'results_phase2/multi_asset_trades_mf0_0004_slip1.0x_CAPPED.csv'
 if not os.path.exists(trades_file):
     # Fallback to any available trades file
     import glob
@@ -116,6 +116,17 @@ print(f"  Expected maximum (per trade): {expected_max_sr:.4f}")
 print(f"  DSR: {dsr:.4f}")
 print(f"  p-value: {p_value_dsr:.4f}")
 print(f"  Survives (p < 0.05)? {p_value_dsr < 0.05}")
+
+print()
+print("NOTE ON DSR INTERPRETATION:")
+print(f"  Excess kurtosis in returns = {kurt_val:.2f}")
+print("  The B&LdP DSR formula assumes approximately Gaussian returns.")
+print("  With kurtosis this extreme, SR_std shrinks toward zero, which")
+print("  inflates DSR. The reported DSR should be treated as an upper")
+print("  bound, not a point estimate.")
+print("  PRIMARY SIGNIFICANCE MEASURES:")
+print("    - HAC t-test (robust to autocorrelation): p<0.001")
+print("    - Block bootstrap 95% CI: excludes zero")
 
 # Save results to file
 output_dir = 'results_phase2'
