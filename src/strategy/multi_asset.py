@@ -130,6 +130,47 @@ def backtest_asset_with_threshold(df, asset_name, min_funding, slippage_multipli
     return trades
 
 
+def apply_position_cap(trades_df, cap_fraction=0.15):
+    """
+    Cap each asset's contribution to total PnL at cap_fraction.
+    Returns (capped_trades_df, raw_asset_pnl_series, capped_asset_pnl_series)
+    """
+    if trades_df.empty:
+        return trades_df.copy(), pd.Series(dtype=float), pd.Series(dtype=float)
+
+    # Compute asset PnL
+    asset_pnl = trades_df.groupby('asset')['net_pnl_pct'].sum()
+    total_pnl = asset_pnl.sum()
+
+    # If total PnL <= 0, we don't cap (we could cap negative assets but skip for now)
+    if total_pnl <= 0:
+        return trades_df.copy(), asset_pnl, asset_pnl
+
+    # Determine which assets exceed the cap
+    exceeded = asset_pnl > cap_fraction * total_pnl
+    if not any(exceeded):
+        return trades_df.copy(), asset_pnl, asset_pnl
+
+    # Create a copy of trades_df to modify
+    capped_trades = trades_df.copy()
+
+    # For each exceeded asset, compute scale factor and apply to its trades
+    for asset in asset_pnl[exceeded].index:
+        asset_total = asset_pnl[asset]
+        target = cap_fraction * total_pnl
+        scale_factor = target / asset_total
+        # Apply to all trades of this asset
+        mask = capped_trades['asset'] == asset
+        capped_trades.loc[mask, 'net_pnl_pct'] *= scale_factor
+        capped_trades.loc[mask, 'funding_pnl_pct'] *= scale_factor
+        capped_trades.loc[mask, 'cost_pct'] *= scale_factor
+
+    # Recompute asset PnL after capping
+    capped_asset_pnl = capped_trades.groupby('asset')['net_pnl_pct'].sum()
+
+    return capped_trades, asset_pnl, capped_asset_pnl
+
+
 def calculate_metrics(trades_df):
     if trades_df.empty:
         return {
@@ -146,12 +187,12 @@ def calculate_metrics(trades_df):
             'cost_drag': 0.0,
             'months': 0.0
         }
-    
+
     # Basic stats
     trades = len(trades_df)
     win_rate = (trades_df['net_pnl_pct'] > 0).mean() * 100
     total_pnl = trades_df['net_pnl_pct'].sum()
-    
+
     # Sharpe with correct annualization
     if trades > 1:
         # Calculate months from actual trade timestamps
@@ -172,26 +213,26 @@ def calculate_metrics(trades_df):
     else:
         sharpe = 0.0
         months = 0.0
-    
+
     # Max drawdown from equity curve (cumulative net PnL)
     df_sorted = trades_df.sort_values('exit_time')
     cum = df_sorted['net_pnl_pct'].cumsum()  # in percent
     peak = np.maximum.accumulate(cum)
     dd = cum - peak  # in percent
     max_dd = dd.min()  # already in percent (negative or zero)
-    
+
     # Average win and loss
     wins = trades_df[trades_df['net_pnl_pct'] > 0]['net_pnl_pct']
     losses = trades_df[trades_df['net_pnl_pct'] < 0]['net_pnl_pct']
     avg_win = wins.mean() if len(wins) > 0 else 0
     avg_loss = abs(losses.mean()) if len(losses) > 0 else 0
     rr = avg_win / avg_loss if avg_loss != 0 else 0
-    
+
     # Gross vs net
     gross_pnl = trades_df['funding_pnl_pct'].sum()
     net_pnl = trades_df['net_pnl_pct'].sum()
     cost_drag = gross_pnl - net_pnl  # or sum of cost_pct
-    
+
     return {
         'trades': trades,
         'win_rate': win_rate,
@@ -212,27 +253,27 @@ def main():
     print("=" * 70)
     print("PHASE 2: ADDING MISSING METRICS AND SLIPPAGE SENSITIVITY")
     print("=" * 70)
-    
+
     assets = load_all_assets()
     print(f"Loaded {len(assets)} assets\n")
-    
+
     # Slippage multipliers to test
     slippage_multipliers = [0.5, 1.0, 1.5]
     slippage_labels = ['0.5x', '1.0x', '1.5x']
-    
+
     # Store all results
     all_results = []
-    
+
     for sm, label in zip(slippage_multipliers, slippage_labels):
         print(f"\n{'='*20} SLIPPAGE {label} {'='*20}")
         threshold_results = []
-        
+
         for mf in MIN_FUNDING_LEVELS:
             all_trades = []
             for name, df in assets.items():
                 t = backtest_asset_with_threshold(df, name, mf, sm)
                 all_trades.extend(t)
-            
+
             if not all_trades:
                 print(f"MIN_FUNDING={mf:.4f}: No trades")
                 threshold_results.append({
@@ -251,28 +292,63 @@ def main():
                     'months': 0.0
                 })
                 continue
-            
+
             tdf = pd.DataFrame(all_trades)
             metrics = calculate_metrics(tdf)
             metrics['min_funding'] = mf
             metrics['slippage'] = label
             threshold_results.append(metrics)
-            
+
             print(f"MIN_FUNDING={mf:.4f}: {metrics['trades']:4d} trades, "
                   f"WR {metrics['win_rate']:5.1f}%, "
                   f"PnL {metrics['total_pnl']:+7.2f}%, "
                   f"Sharpe {metrics['sharpe']:5.2f}, "
                   f"MaxDD {metrics['max_dd']:6.2f}%, "
                   f"R:R {metrics['rr']:4.2f}")
-            
+
             # Save trades for this threshold and slippage
             if len(tdf) > 0:
                 mf_str = f'{mf:.4f}'.replace('.', '_')
                 trades_file = os.path.join(OUTPUT_DIR, f'multi_asset_trades_mf{mf_str}_slip{label}.csv')
                 tdf.to_csv(trades_file, index=False)
-        
+                
+                # Apply position cap and save capped trades
+                capped_trades, raw_asset_pnl, capped_asset_pnl = apply_position_cap(tdf, cap_fraction=0.15)
+                if len(capped_trades) > 0:
+                    # Calculate metrics for capped trades
+                    capped_metrics = calculate_metrics(capped_trades)
+                    
+                    # Report: raw PnL, capped PnL, per-asset contribution after capping
+                    total_raw_pnl = raw_asset_pnl.sum()
+                    total_capped_pnl = capped_asset_pnl.sum()
+                    
+                    print(f"  Position capping (15% cap):")
+                    print(f"    Raw PnL: {total_raw_pnl:+.2f}%")
+                    print(f"    Capped PnL: {total_capped_pnl:+.2f}%")
+                    
+                    # Show top assets contributions before and after capping
+                    if len(raw_asset_pnl) > 0:
+                        top_asset_raw = raw_asset_pnl.idxmax()
+                        top_asset_raw_pct = (raw_asset_pnl.max() / total_raw_pnl * 100) if total_raw_pnl != 0 else 0
+                        top_asset_capped = capped_asset_pnl.idxmax() if len(capped_asset_pnl) > 0 else None
+                        top_asset_capped_pct = (capped_asset_pnl.max() / total_capped_pnl * 100) if total_capped_pnl != 0 and len(capped_asset_pnl) > 0 else 0
+                        
+                        print(f"    Top asset raw: {top_asset_raw} ({top_asset_raw_pct:.1f}% of PnL)")
+                        print(f"    Top asset capped: {top_asset_capped} ({top_asset_capped_pct:.1f}% of PnL)")
+                    
+                    # Save capped trades
+                    capped_trades_file = os.path.join(OUTPUT_DIR, f'multi_asset_trades_mf{mf_str}_slip{label}_CAPPED.csv')
+                    capped_trades.to_csv(capped_trades_file, index=False)
+                    print(f"    Saved capped trades to: {capped_trades_file}")
+                    
+                    # STOP and report if capped PnL falls below +10%
+                    if total_capped_pnl < 10.0:
+                        print(f"    WARNING: Capped PnL ({total_capped_pnl:+.2f}%) is below +10% threshold!")
+                else:
+                    print(f"  Position capping: No trades after capping")
+
         all_results.extend(threshold_results)
-        
+
         # Print summary table for this slippage
         print(f"\n--- SUMMARY FOR SLIPPAGE {label} ---")
         print(f"{'Min Funding':<12} {'Trades':<8} {'Win Rate':<10} {'Total PnL':<12} {'Sharpe':<8} {'Max DD':<10} {'R:R':<8}")
@@ -280,7 +356,7 @@ def main():
         for res in threshold_results:
             print(f"{res['min_funding']:<12.4f} {res['trades']:<8} {res['win_rate']:<10.1f} "
                   f"{res['total_pnl']:<12.2f} {res['sharpe']:<8.2f} {res['max_dd']:<10.2f} {res['rr']:<8.2f}")
-    
+
     # Save full report
     report_file = os.path.join(OUTPUT_DIR, 'metrics_full_report.txt')
     with open(report_file, 'w') as f:
@@ -298,9 +374,9 @@ def main():
                           f"{res['rr']:<8.2f} {res['gross_pnl']:<10.2f} {res['net_pnl']:<10.2f} "
                           f"{res['cost_drag']:<10.2f} {res['months']:<8.1f}\n")
             f.write("\n")
-    
+
     print(f"\nFull report saved to {report_file}")
-    
+
     # Also save a summary of the best configuration per slippage
     summary_file = os.path.join(OUTPUT_DIR, 'multi_asset_summary.txt')
     with open(summary_file, 'w') as f:
@@ -315,7 +391,7 @@ def main():
                     f.write(f"{res['min_funding']:<12.4f} {res['trades']:<8} {res['win_rate']:<10.1f} "
                           f"{res['total_pnl']:<12.2f} {res['sharpe']:<8.2f} {res['max_dd']:<10.2f} {res['rr']:<8.2f}\n")
             f.write("\n")
-    
+
     print(f"Summary saved to {summary_file}")
 
 
