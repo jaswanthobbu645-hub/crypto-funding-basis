@@ -1,4 +1,4 @@
-﻿# Crypto Funding Basis Harvest
+# Crypto Funding Basis Harvest
 
 Delta-neutral funding-rate arbitrage across 65 crypto perpetual futures.
 Statistically validated, cost-aware, with per-asset position caps.
@@ -43,7 +43,7 @@ Statistically validated, cost-aware, with per-asset position caps.
 - Walk-forward: 12 of 17 windows positive
 
 DSR caveat: The B&LdP DSR formula assumes approximately Gaussian returns.
-Our returns have excess kurtosis of 34.7 (funding harvests are fat-tailed),
+Our returns have excess kurtosis of 45.0 (funding harvests are fat-tailed),
 which inflates DSR above its reliable range. HAC and block bootstrap are the
 primary significance evidence.
 

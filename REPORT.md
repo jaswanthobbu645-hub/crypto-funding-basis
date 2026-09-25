@@ -1,4 +1,4 @@
-﻿# Funding Basis Harvest - Executive Report (v3.0.0)
+# Funding Basis Harvest - Executive Report (v3.0.0)
 
 ## Executive Summary
 
@@ -23,7 +23,7 @@ concentration.
 | Trades | 1,060 |
 | Trades / month | 45.5 |
 | Net PnL | +52.15% |
-| Sharpe | 4.70 |
+| Sharpe | 4.45 |
 | Max Drawdown | -8.79% |
 | Reward:Risk | 3.58 |
 | Win rate | 44.2% |
@@ -58,7 +58,7 @@ Funding applied per 8h interval. Slippage stress-tested at 0.5x / 1.0x / 1.5x.
 ## Limitations
 
 - Execution assumed at hourly bar close; intra-bar volatility not modeled.
-- Returns are fat-tailed (excess kurtosis 34.7) - DSR unreliable, HAC and
+- Returns are fat-tailed (excess kurtosis 45.0) - DSR unreliable, HAC and
   bootstrap are primary.
 - 63% of PnL in 2026; 2025 contributes 37%. Regime dependence is real.
 - Walk-forward shows mixed performance; 12/17 windows positive.
